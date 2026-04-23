@@ -9,8 +9,6 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
-  // base: './' - ЭТО ГЛАВНОЕ для Electron. 
-  // Без этого пути к файлам в окне будут битыми (белый экран).
   base: './', 
   plugins: [
     react(), 
@@ -21,7 +19,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
-  // Настройки сервера для разработки
   server: {
     port: 5173,
     strictPort: true,

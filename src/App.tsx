@@ -17,8 +17,12 @@ function App() {
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView({ type: 'list' })}>
-            <div className="bg-blue-600 p-2 rounded-lg"><Layout className="text-white" size={24} /></div>
-            <span className="text-xl font-black tracking-tight text-slate-800 uppercase italic">Car<span className="text-blue-600">DB</span></span>
+            <div className="bg-blue-600 p-2 rounded-lg">
+              <Layout className="text-white" size={24} />
+            </div>
+            <span className="text-xl font-black tracking-tight text-slate-800 uppercase italic">
+              BRONCO<span className="text-blue-600">PARTS</span>
+            </span>
           </div>
           
           <button 
@@ -37,6 +41,8 @@ function App() {
             clients={storage.clients}
             cars={storage.cars}
             addClient={storage.addClient}
+            deleteClient={storage.deleteClient}
+            deleteCar={storage.deleteCar} // Проброс функции
             addCarToClient={storage.addCarToClient}
             onSelectCar={(carId) => setCurrentView({ type: 'details', carId })} 
           />

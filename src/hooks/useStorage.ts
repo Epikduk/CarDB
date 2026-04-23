@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Client, Car, MaintenanceRecord, AppData } from '../types';
 
-// При первом запуске база полностью пуста
 const initialData: AppData = {
   clients: [],
   cars: [],
@@ -19,7 +18,6 @@ export function useStorage() {
         setData(prev => ({
           ...initialData,
           ...savedData,
-          // Гарантируем, что даже если в старом файле не было поля, оно появится
           noteOptions: savedData.noteOptions || [] 
         }));
       }
@@ -43,6 +41,22 @@ export function useStorage() {
       ...prev,
       clients: [...prev.clients, { id: clientId, fullName, phone }],
       cars: [...prev.cars, { id: carId, clientId, vin, brand, model, records: [] }]
+    }));
+  };
+
+  const deleteClient = (clientId: string) => {
+    setData(prev => ({
+      ...prev,
+      clients: prev.clients.filter(c => c.id !== clientId),
+      cars: prev.cars.filter(car => car.clientId !== clientId)
+    }));
+  };
+
+  // НОВАЯ ФУНКЦИЯ: Удаление конкретного автомобиля
+  const deleteCar = (carId: string) => {
+    setData(prev => ({
+      ...prev,
+      cars: prev.cars.filter(car => car.id !== carId)
     }));
   };
 
@@ -82,6 +96,8 @@ export function useStorage() {
     cars: data.cars,
     noteOptions: data.noteOptions,
     addClient,
+    deleteClient,
+    deleteCar, // Экспортируем функцию
     addCarToClient,
     addRecord,
     deleteRecord,

@@ -4,6 +4,11 @@
       "id": "3cd16271-7afd-4824-9523-b38f00560035",
       "fullName": "123",
       "phone": "123"
+    },
+    {
+      "id": "0202373a-58e9-4401-8509-663da9f7553b",
+      "fullName": "Виталий Кызин",
+      "phone": "8999436783"
     }
   ],
   "cars": [
@@ -21,8 +26,54 @@
       "vin": "321",
       "brand": "312",
       "model": "312",
-      "records": []
+      "records": [
+        {
+          "date": "2026-04-23",
+          "catalogNumber": "213",
+          "brand": "321",
+          "description": "321",
+          "quantity": 31,
+          "unitPriceSale": 321,
+          "unitPricePurchase": 321,
+          "totalPrice": 9951,
+          "purchasePrice": 9951,
+          "note": "то",
+          "id": "90e57b0b-f1c4-4f87-9b67-b3c3c97d93f8"
+        }
+      ]
+    },
+    {
+      "id": "5c0a5d0f-bd47-4eb4-8437-648c4d66943c",
+      "clientId": "0202373a-58e9-4401-8509-663da9f7553b",
+      "vin": "X9FKXXEEBKBP51638",
+      "brand": "FORD",
+      "model": "FOCUS 3",
+      "records": [
+        {
+          "date": "2026-04-23",
+          "catalogNumber": "1234",
+          "brand": "qwer",
+          "description": "qwer",
+          "quantity": 3,
+          "unitPriceSale": 234,
+          "unitPricePurchase": 322,
+          "totalPrice": 702,
+          "purchasePrice": 966,
+          "note": "ауди центр витебский",
+          "id": "d344af41-7956-420e-a77f-ed9aac61f649"
+        }
+      ]
     }
   ],
-  "noteOptions": []
+  "noteOptions": [
+    "то",
+    "запчастье",
+    "академия бмв мск",
+    "запсклад",
+    "ауди центр витебский",
+    "автолиния бухар",
+    "мирзап",
+    "emex",
+    "запбери купчино"
+  ]
 }

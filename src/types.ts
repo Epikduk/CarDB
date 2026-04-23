@@ -30,5 +30,5 @@ export interface Client {
 export interface AppData {
   clients: Client[];
   cars: Car[];
-  noteOptions: string[]; // Список вариантов для примечаний
+  noteOptions: string[];
 }
