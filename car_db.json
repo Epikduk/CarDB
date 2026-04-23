@@ -1,0 +1,28 @@
+{
+  "clients": [
+    {
+      "id": "3cd16271-7afd-4824-9523-b38f00560035",
+      "fullName": "123",
+      "phone": "123"
+    }
+  ],
+  "cars": [
+    {
+      "id": "c251a927-17c7-4a54-a9f9-5f88febb23da",
+      "clientId": "3cd16271-7afd-4824-9523-b38f00560035",
+      "vin": "123",
+      "brand": "123",
+      "model": "123",
+      "records": []
+    },
+    {
+      "id": "197a9fe3-9e12-49e6-8ccc-6d7dbfa9edcc",
+      "clientId": "3cd16271-7afd-4824-9523-b38f00560035",
+      "vin": "321",
+      "brand": "312",
+      "model": "312",
+      "records": []
+    }
+  ],
+  "noteOptions": []
+}

@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Убираем только системную оранжевую обводку */
+  input:focus, 
+  select:focus, 
+  textarea:focus, 
+  button:focus {
+    outline: none !important;
+  }
+}
