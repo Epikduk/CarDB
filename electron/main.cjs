@@ -8,7 +8,9 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
-    title: "BroncoParts", // Здесь новое название
+    title: "BroncomParts", // Новое название
+    icon: path.join(__dirname, '../icon.ico'), // Путь к иконке
+    backgroundColor: '#0a0b0d', // Цвет фона при загрузке
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,

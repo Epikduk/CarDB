@@ -3,9 +3,10 @@ import { Home } from './pages/Home';
 import { ClientList } from './pages/ClientList';
 import { CarDetails } from './pages/CarDetails';
 import { Reporting } from './pages/Reporting';
-import { Layout, Settings, Home as HomeIcon } from 'lucide-react';
+import { Settings, Home as HomeIcon, Layout as LayoutIcon } from 'lucide-react';
 import { useStorage } from './hooks/useStorage';
 import { SettingsModal } from './components/SettingsModal';
+import logo from './logo.png';
 
 type View = { type: 'home' | 'list' | 'details' | 'reporting'; carId?: string };
 
@@ -14,22 +15,29 @@ function App() {
   const [currentView, setCurrentView] = useState<View>({ type: 'home' });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center">Загрузка BroncoParts...</div>;
+  if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center font-bold">Загрузка BroncomParts...</div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div className="min-h-screen font-sans">
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-[100] shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView({ type: 'home' })}>
-            <div className="bg-blue-600 p-2 rounded-lg"><Layout className="text-white" size={24} /></div>
-            <span className="text-xl font-black tracking-tight text-slate-800 uppercase italic">Bronco<span className="text-blue-600">Parts</span></span>
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView({ type: 'home' })}>
+            <img src={logo} alt="L" className="w-9 h-9 object-contain transition-transform group-hover:scale-110" />
+            <span className="text-xl font-black tracking-tight uppercase italic transition-colors">
+              <span className="text-black group-hover:text-green-600">Broncom</span>
+              <span className="text-green-600 group-hover:text-black">Parts</span>
+            </span>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {currentView.type !== 'home' && (
-              <button onClick={() => setCurrentView({ type: 'home' })} className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-blue-600 font-bold text-sm transition-all"><HomeIcon size={18} />На главную</button>
+              <button onClick={() => setCurrentView({ type: 'home' })} className="flex items-center gap-2 px-4 py-2 text-slate-500 hover:text-black font-bold text-xs uppercase tracking-widest transition-all">
+                <HomeIcon size={18} /> На главную
+              </button>
             )}
-            <button onClick={() => setIsSettingsOpen(true)} className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-bold text-sm"><Settings size={18} />Настройки</button>
+            <button onClick={() => setIsSettingsOpen(true)} className="btn-action">
+              <Settings size={18} /> Настройки
+            </button>
           </div>
         </div>
       </nav>

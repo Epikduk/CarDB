@@ -2,8 +2,13 @@
   "clients": [
     {
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
-      "fullName": "Клиент Виталика",
+      "fullName": "Клиент Виталика34",
       "phone": "+79289115507"
+    },
+    {
+      "id": "c5f42b8f-72b3-4896-af6d-63a575741450",
+      "fullName": "31",
+      "phone": ""
     }
   ],
   "cars": [
@@ -19,26 +24,13 @@
           "catalogNumber": "CB0452L",
           "brand": "CTR",
           "description": "Опора шаровая левая",
-          "quantity": 1,
+          "quantity": 3,
           "unitPriceSale": 2350,
           "unitPricePurchase": 1678,
-          "totalPrice": 2350,
-          "purchasePrice": 1678,
+          "totalPrice": 7050,
+          "purchasePrice": 5034,
           "note": "—",
           "id": "9b17e02c-673e-4e65-bd6e-29e281d4342e"
-        },
-        {
-          "date": "2026-04-23",
-          "catalogNumber": "CB0452R",
-          "brand": "CTR",
-          "description": "Опора шаровая правая",
-          "quantity": 1,
-          "unitPriceSale": 2350,
-          "unitPricePurchase": 1678,
-          "totalPrice": 2350,
-          "purchasePrice": 1678,
-          "note": "—",
-          "id": "f8e8914b-99ee-4dfc-a3d9-1f67a95517ec"
         },
         {
           "date": "2026-04-23",
@@ -130,11 +122,125 @@
           "purchasePrice": 526,
           "note": "—",
           "id": "9d6648b9-f5cc-4e4f-a8cf-d6a66df76ac9"
+        },
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "",
+          "brand": "уц",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "то",
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "id": "25d0be65-03ec-41ff-9cc5-4af45dedc3f7"
+        },
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": "",
+          "unitPricePurchase": "",
+          "note": "я",
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "id": "afcc336c-1352-4e36-8d2a-756c2edb00cf"
+        },
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "123",
+          "brand": "312",
+          "description": "321321",
+          "quantity": 32,
+          "unitPriceSale": "22",
+          "unitPricePurchase": "13",
+          "note": "то",
+          "totalPrice": 704,
+          "purchasePrice": 416,
+          "id": "8fbeb509-7d15-4e18-8d85-76246876008e"
         }
-      ]
+      ],
+      "carNote": "312321",
+      "licensePlate": "123",
+      "year": "31"
+    },
+    {
+      "id": "ccf0631b-1f85-4e12-86fe-16ace7583b1a",
+      "clientId": "c5f42b8f-72b3-4896-af6d-63a575741450",
+      "records": [
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "312",
+          "brand": "312",
+          "description": "321",
+          "quantity": 123,
+          "unitPriceSale": "32",
+          "unitPricePurchase": "32",
+          "note": "то",
+          "totalPrice": 3936,
+          "purchasePrice": 3936,
+          "id": "3ccf4ffb-e3f7-4cc2-ad9c-c748747b0814"
+        },
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 321,
+          "unitPriceSale": "32",
+          "unitPricePurchase": "321",
+          "note": "то",
+          "totalPrice": 10272,
+          "purchasePrice": 103041,
+          "id": "6d834703-c32e-4458-af51-384e5284c7a5"
+        }
+      ],
+      "vin": "",
+      "brand": "231",
+      "model": "3",
+      "year": "",
+      "licensePlate": "",
+      "carNote": ""
+    },
+    {
+      "id": "d04d8f23-85b9-4e21-b58a-7891316d0a9c",
+      "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
+      "records": [
+        {
+          "date": "2026-04-24",
+          "catalogNumber": "321",
+          "brand": "312",
+          "description": "321",
+          "quantity": 1,
+          "unitPriceSale": "321",
+          "unitPricePurchase": "321",
+          "note": "то",
+          "totalPrice": 321,
+          "purchasePrice": 321,
+          "id": "80fc8b2f-00f0-4e28-a84d-e155bb63488d"
+        }
+      ],
+      "vin": "321",
+      "brand": "123",
+      "model": "321",
+      "year": "321",
+      "licensePlate": "",
+      "carNote": ""
+    },
+    {
+      "id": "b85bec76-639b-409f-ba24-0bbf4466077a",
+      "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
+      "records": [],
+      "vin": "34",
+      "brand": "43",
+      "model": "43",
+      "year": "",
+      "licensePlate": "",
+      "carNote": ""
     }
   ],
-  "noteOptions": [
-    "то"
-  ]
+  "noteOptions": []
 }

@@ -17,18 +17,24 @@ export function AddCarModal({ isOpen, onClose, clientId, onAdd, initialData }: a
     onClose();
   };
 
-  const labelStyle = "block text-[10px] font-normal text-slate-400 uppercase mb-1 tracking-widest font-normal";
-  const inputStyle = "w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-normal transition-all text-slate-700";
+  const labelStyle = "block text-[9px] font-black text-slate-400 uppercase mb-1.5 tracking-widest ml-1";
+  const inputStyle = "w-full px-4 py-2 border border-slate-200 rounded-xl outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/5 transition-all text-slate-800 font-bold text-xs bg-white shadow-sm";
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[130] p-4 font-normal text-slate-700">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200">
-        <div className="p-6 border-b flex justify-between items-center bg-slate-50">
-          <h2 className="text-xl font-bold text-slate-800">{initialData ? 'Редактировать авто' : 'Новый автомобиль'}</h2>
-          <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={24} /></button>
+    <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[130] p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.2)] w-full max-w-md overflow-hidden animate-in zoom-in duration-200 border border-white/20">
+        <div className="p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+          <div>
+            <h2 className="text-lg font-black text-slate-950 uppercase italic tracking-tighter leading-none">
+              {initialData ? 'Редактировать авто' : 'Новый автомобиль'}
+            </h2>
+          </div>
+          <button type="button" onClick={onClose} className="p-1.5 text-slate-300 hover:text-slate-950 hover:bg-slate-100 rounded-full transition-all">
+            <X size={22} />
+          </button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4 font-normal">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelStyle}>Марка</label>
               <input required className={inputStyle} value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} />
@@ -39,8 +45,7 @@ export function AddCarModal({ isOpen, onClose, clientId, onAdd, initialData }: a
             </div>
             <div className="col-span-2">
               <label className={labelStyle}>VIN Номер</label>
-              {/* Удален атрибут required */}
-              <input className={`${inputStyle} uppercase font-mono`} value={formData.vin} onChange={e => setFormData({...formData, vin: e.target.value})} />
+              <input className={`${inputStyle} uppercase font-mono tracking-tighter`} value={formData.vin} onChange={e => setFormData({...formData, vin: e.target.value})} />
             </div>
             <div>
               <label className={labelStyle}>Год выпуска</label>
@@ -48,15 +53,15 @@ export function AddCarModal({ isOpen, onClose, clientId, onAdd, initialData }: a
             </div>
             <div>
               <label className={labelStyle}>Гос. Номер</label>
-              <input className={`${inputStyle} uppercase`} value={formData.licensePlate} onChange={e => setFormData({...formData, licensePlate: e.target.value})} />
+              <input className={`${inputStyle} uppercase font-bold tracking-widest`} value={formData.licensePlate} onChange={e => setFormData({...formData, licensePlate: e.target.value})} />
             </div>
             <div className="col-span-2">
               <label className={labelStyle}>Примечание</label>
-              <textarea className={`${inputStyle} h-20`} value={formData.carNote} onChange={e => setFormData({...formData, carNote: e.target.value})} />
+              <textarea className={`${inputStyle} h-16 resize-none font-normal text-xs`} value={formData.carNote} onChange={e => setFormData({...formData, carNote: e.target.value})} />
             </div>
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all active:scale-[0.98] font-normal">
-            Сохранить изменения
+          <button type="submit" className="w-full bg-slate-950 text-white py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-green-600 transition-all shadow-lg active:scale-95 mt-2">
+            Сохранить данные
           </button>
         </form>
       </div>

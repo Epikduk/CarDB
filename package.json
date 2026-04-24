@@ -1,8 +1,8 @@
 {
-  "name": "broncoparts-desktop",
+  "name": "broncomparts-desktop",
   "private": true,
   "version": "1.0.0",
-  "description": "База данных BroncoParts",
+  "description": "База данных BroncomParts",
   "author": "Богдан",
   "main": "electron/main.cjs",
   "type": "module",
@@ -39,8 +39,8 @@
     "wait-on": "^8.0.1"
   },
   "build": {
-    "appId": "com.broncoparts.app",
-    "productName": "BroncoParts",
+    "appId": "com.broncomparts.app",
+    "productName": "BroncomParts",
     "directories": {
       "output": "release"
     },

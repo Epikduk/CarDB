@@ -1,25 +1,28 @@
 import React, { useState, useMemo } from 'react';
-import { Download, Calendar, Users, Car as CarIcon } from 'lucide-react';
+import { Download, Calendar } from 'lucide-react';
 import { format, isWithinInterval, parseISO, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Car, Client } from '../types';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ROBOTO_FONT_BASE64 } from '../font';
+import { CustomSelect } from '../components/CustomSelect';
 
-interface ReportingProps {
-  cars: Car[]; clients: Client[]; onBack: () => void;
-}
-
-export function Reporting({ cars, clients, onBack }: ReportingProps) {
+export function Reporting({ cars, clients, onBack }: any) {
   const prevMonthDate = subMonths(new Date(), 1);
   const [reportMode, setReportMode] = useState<'month' | 'custom'>('month');
-  const [selectedMonth, setSelectedMonth] = useState(prevMonthDate.getMonth());
-  const [selectedYear, setSelectedYear] = useState(prevMonthDate.getFullYear());
-  const [customRange, setCustomRange] = useState({ start: format(startOfMonth(prevMonthDate), 'yyyy-MM-dd'), end: format(endOfMonth(prevMonthDate), 'yyyy-MM-dd') });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [customRange, setCustomRange] = useState({ 
+    start: format(startOfMonth(prevMonthDate), 'yyyy-MM-dd'), 
+    end: format(endOfMonth(prevMonthDate), 'yyyy-MM-dd') 
+  });
   const [filterClientId, setFilterClientId] = useState('all');
   const [filterCarId, setFilterCarId] = useState('all');
 
+  const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+  const years = Array.from({length: 5}, (_, i) => (new Date().getFullYear() - i).toString());
+  
   const allRecords = useMemo(() => {
     return cars.flatMap(car => car.records.map(r => ({
       ...r, carName: `${car.brand} ${car.model}`, carId: car.id, clientId: car.clientId,
@@ -47,113 +50,130 @@ export function Reporting({ cars, clients, onBack }: ReportingProps) {
   const exportPDF = () => {
     try {
       const doc = new jsPDF();
-      const periodText = reportMode === 'month' ? format(new Date(selectedYear, selectedMonth), 'LLLL yyyy', { locale: ru }) : `${format(parseISO(customRange.start), 'dd.MM.yyyy')} - ${format(parseISO(customRange.end), 'dd.MM.yyyy')}`;
       const cleanFont = ROBOTO_FONT_BASE64.replace(/^data:font\/ttf;base64,/, '').replace(/['"()]/g, '').trim();
-      if (cleanFont.length > 100) { doc.addFileToVFS('Roboto-Regular.ttf', cleanFont); doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal'); doc.setFont('Roboto', 'normal'); }
-      doc.setFontSize(18); doc.text('BRONCOPARTS: ОТЧЕТ ПО ПРОДАЖАМ', 14, 20);
-      doc.setFontSize(10); doc.text(`Период: ${periodText.toUpperCase()}`, 14, 28);
+      doc.addFileToVFS('Roboto-Regular.ttf', cleanFont);
+      doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(18);
+      doc.text('BRONCOMPARTS: ОТЧЕТ ПО ПРОДАЖАМ', 14, 20);
       const tableData = filteredData.map(r => [format(parseISO(r.date), 'dd.MM.yy'), r.clientName, r.carName, r.description, r.quantity, `${r.totalPrice.toLocaleString()} RUB`, `${r.purchasePrice.toLocaleString()} RUB`]);
       autoTable(doc, {
-        startY: 35, head: [['Дата', 'Клиент', 'Автомобиль', 'Описание', 'Кол-во', 'Итоговая сумма', 'Закупка']], body: tableData, theme: 'grid',
-        styles: { font: (cleanFont.length > 200) ? 'Roboto' : 'helvetica', fontSize: 7, fontStyle: 'normal' },
-        headStyles: { fillColor: [30, 41, 59], fontStyle: 'normal' },
+        startY: 35, head: [['Дата', 'Клиент', 'Автомобиль', 'Описание', 'Количество', 'Итоговая сумма', 'Закупка']], body: tableData, theme: 'grid',
+        styles: { font: 'Roboto', fontStyle: 'normal', fontSize: 7 },
+        headStyles: { fillColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' },
         foot: [['ИТОГО', '', '', '', '', `${totals.sale.toLocaleString()} RUB`, `${totals.purchase.toLocaleString()} RUB`]],
-        footStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], fontStyle: 'normal' }
+        footStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], font: 'Roboto', fontStyle: 'normal' }
       });
-      const finalY = (doc as any).lastAutoTable.finalY || 60;
-      doc.setFontSize(11); doc.text(`Чистая прибыль за период: ${totals.profit.toLocaleString()} RUB`, 14, finalY + 10);
-      doc.save(`BroncoParts_Report_${periodText}.pdf`);
+      doc.save(`Report_${format(new Date(), 'dd_MM_yyyy')}.pdf`);
     } catch (err) { console.error(err); }
   };
 
-  const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-  const years = Array.from({length: 5}, (_, i) => new Date().getFullYear() - i);
+  const selectedClientName = filterClientId === 'all' ? 'Все клиенты' : clients.find(c => c.id === filterClientId)?.fullName;
   const availableCars = filterClientId === 'all' ? [] : cars.filter(c => c.clientId === filterClientId);
+  const selectedCarName = filterCarId === 'all' ? 'Все авто' : cars.find(c => c.id === filterCarId)?.brand + ' ' + cars.find(c => c.id === filterCarId)?.model;
 
   return (
-    <div className="p-4 max-w-7xl mx-auto animate-in fade-in duration-500 font-normal text-slate-700">
-      <div className="mb-6">
-        <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Отчетность</h1>
-      </div>
+    <div className="p-4 max-w-7xl mx-auto animate-in fade-in duration-500">
+      <div className="mb-6 text-left"><h1 className="text-3xl font-black text-black uppercase tracking-tight italic">Отчетность</h1></div>
 
-      {/* ПАНЕЛЬ ИТОГОВ */}
-      <div className="p-6 bg-slate-900 text-white rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6 mb-6 shadow-xl animate-in slide-in-from-top-4 duration-500">
-        <div className="flex gap-10">
-          <div><p className="text-[9px] text-slate-400 uppercase font-normal mb-1 tracking-widest">Итоговая сумма</p><p className="text-3xl font-black">{totals.sale.toLocaleString()} ₽</p></div>
-          <div><p className="text-[9px] text-slate-400 uppercase font-normal mb-1 tracking-widest">Закупка</p><p className="text-3xl font-black text-slate-400">{totals.purchase.toLocaleString()} ₽</p></div>
+      <div className="p-8 bg-black text-white rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-8 mb-6 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="flex gap-12 relative z-10">
+          <div><p className="text-[10px] text-slate-400 uppercase font-black mb-1">Итоговая сумма</p><p className="text-3xl font-black">{totals.sale.toLocaleString()} ₽</p></div>
+          <div><p className="text-[10px] text-slate-400 uppercase font-black mb-1">Закупка</p><p className="text-3xl font-black text-slate-600">{totals.purchase.toLocaleString()} ₽</p></div>
         </div>
-        <div className="text-center md:text-right border-t md:border-t-0 md:border-l border-slate-700 pt-4 md:pt-0 md:pl-10">
-          <p className="text-[9px] text-slate-400 uppercase font-normal mb-1 tracking-widest">Чистая прибыль</p>
-          <p className={`text-5xl font-black tracking-tighter ${totals.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>{totals.profit.toLocaleString()} ₽</p>
+        <div className="text-right border-l border-white/10 pl-12 relative z-10">
+          <p className="text-[10px] text-slate-400 uppercase font-black mb-1">Чистая прибыль</p>
+          <p className={`text-5xl font-black italic tracking-tighter ${totals.profit >= 0 ? 'text-green-500' : 'text-red-500'}`}>{totals.profit.toLocaleString()} ₽</p>
         </div>
       </div>
 
-      {/* ФИЛЬТРЫ ТИПА ОТЧЕТА */}
-      <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm w-fit mb-4 font-normal">
-        {['month', 'custom'].map((mode) => (
-          <button 
-            key={mode} 
-            onClick={() => setReportMode(mode as any)} 
-            className={`px-5 py-2 rounded-lg text-xs transition-all ${reportMode === mode ? 'bg-blue-600 text-white shadow-lg font-bold' : 'text-slate-500 hover:bg-slate-50'}`}
-          >
-            {mode === 'month' ? 'По месяцам' : 'Произвольный период'}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 font-normal text-slate-700">
-        {/* ВЫБОР ДАТЫ */}
-        <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-end">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-end">
           {reportMode === 'month' ? (
             <>
-              <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Месяц</label>
-                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}>{months.map((m, i) => <option key={i} value={i}>{m}</option>)}</select>
+              <div className="flex-1 text-left">
+                <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">Месяц</label>
+                <CustomSelect options={months} value={months[selectedMonth]} onChange={(val: string) => setSelectedMonth(months.indexOf(val))} />
               </div>
-              <div className="w-24"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Год</label>
-                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}>{years.map(y => <option key={y} value={y}>{y}</option>)}</select>
+              <div className="w-28 text-left">
+                <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">Год</label>
+                <CustomSelect options={years} value={selectedYear.toString()} onChange={(val: string) => setSelectedYear(Number(val))} />
               </div>
             </>
           ) : (
-            <><div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">От</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={customRange.start} onChange={e => setCustomRange({...customRange, start: e.target.value})} /></div>
-              <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">До</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={customRange.end} onChange={e => setCustomRange({...customRange, end: e.target.value})} /></div>
+            <>
+              <div className="flex-1 text-left">
+                <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">От</label>
+                <input type="date" className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-xs shadow-sm focus:border-green-500" value={customRange.start} onChange={e => setCustomRange({...customRange, start: e.target.value})} />
+              </div>
+              <div className="flex-1 text-left">
+                <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">До</label>
+                <input type="date" className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-xs shadow-sm focus:border-green-500" value={customRange.end} onChange={e => setCustomRange({...customRange, end: e.target.value})} />
+              </div>
             </>
           )}
+          <button onClick={() => setReportMode(reportMode === 'month' ? 'custom' : 'month')} className="bg-slate-100 text-slate-500 px-3 h-10 rounded-xl font-black text-[9px] uppercase border border-slate-200 hover:bg-slate-200">
+            {reportMode === 'month' ? 'Период' : 'Месяц'}
+          </button>
         </div>
 
-        {/* ВЫБОР КЛИЕНТА / АВТО */}
-        <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-end font-normal">
-          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1 font-normal">Клиент</label>
-            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={filterClientId} onChange={e => { setFilterClientId(e.target.value); setFilterCarId('all'); }}>
-              <option value="all">Все клиенты</option>{clients.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
-            </select>
+        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-3 items-end">
+          <div className="flex-1 text-left">
+            <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">Клиент</label>
+            <CustomSelect 
+              options={['Все клиенты', ...clients.map(c => c.fullName)]} 
+              value={selectedClientName} 
+              onChange={(val: string) => {
+                if (val === 'Все клиенты') setFilterClientId('all');
+                else setFilterClientId(clients.find(c => c.fullName === val)?.id || 'all');
+                setFilterCarId('all');
+              }} 
+            />
           </div>
-          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1 font-normal">Машина</label>
-            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={filterCarId} onChange={e => setFilterCarId(e.target.value)} disabled={filterClientId === 'all'}>
-              <option value="all">Все машины</option>{availableCars.map(c => <option key={c.id} value={c.id}>{c.brand} {c.model}</option>)}
-            </select>
+          <div className="flex-1 text-left">
+            <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block ml-1">Машина</label>
+            <CustomSelect 
+              className={filterClientId === 'all' ? 'opacity-30 pointer-events-none' : ''}
+              options={['Все авто', ...availableCars.map(c => `${c.brand} ${c.model}`)]} 
+              value={selectedCarName} 
+              onChange={(val: string) => {
+                if (val === 'Все авто') setFilterCarId('all');
+                else setFilterCarId(availableCars.find(c => `${c.brand} ${c.model}` === val)?.id || 'all');
+              }} 
+            />
           </div>
-          <button onClick={exportPDF} className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-9 rounded-lg flex items-center gap-2 font-bold shadow-lg active:scale-95 transition-all text-xs font-normal"><Download size={16} /> Скачать PDF</button>
+          <button onClick={exportPDF} className="btn-action !h-10 !px-4 hover:bg-green-600"><Download size={16} /></button>
         </div>
       </div>
 
-      {/* ТАБЛИЦА */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden font-normal text-slate-700">
-        <div className="overflow-auto max-h-[calc(100vh-450px)] bg-white">
-          <table className="w-full text-left border-collapse min-w-[1100px]">
-            <thead className="sticky top-0 bg-slate-50 z-10 shadow-sm border-b">
-              <tr className="text-slate-500 text-[10px] font-normal uppercase tracking-widest border-b font-normal"><th className="px-4 py-2 font-normal">Дата</th><th className="px-4 py-2 font-normal">Клиент / Автомобиль</th><th className="px-4 py-2 font-normal">Описание</th><th className="px-4 py-2 text-center font-normal">Количество</th><th className="px-4 py-2 text-right font-normal">Итоговая сумма</th><th className="px-4 py-2 text-right font-normal">Закупка</th></tr>
+      <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden">
+        <div className="overflow-auto max-h-[calc(100vh-450px)]">
+          <table className="w-full text-left border-collapse min-w-[1000px]">
+            <thead className="sticky top-0 bg-slate-50 z-10 border-b border-slate-200 shadow-sm">
+              <tr className="text-slate-400 text-[10px] font-black uppercase">
+                <th className="px-6 py-4">Дата</th>
+                <th className="px-6 py-4">Клиент / Автомобиль</th>
+                <th className="px-6 py-4">Описание</th>
+                <th className="px-6 py-4 text-center">Количество</th>
+                <th className="px-6 py-4 text-right">Итоговая сумма</th>
+                <th className="px-6 py-4 text-right">Закупка</th>
+              </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-[13px] font-normal text-slate-700">
+            <tbody className="divide-y divide-slate-50 text-[13px]">
               {filteredData.map((r, i) => (
-                <tr key={i} className="hover:bg-slate-50 transition-colors font-normal">
-                  <td className="px-4 py-1 text-slate-500 font-normal whitespace-nowrap">{format(parseISO(r.date), 'dd.MM.yyyy')}</td>
-                  <td className="px-4 py-1 leading-tight font-normal text-slate-800"><div className="uppercase text-[10px] font-normal">{r.clientName}</div><div className="text-[10px] text-slate-400 font-normal">{r.carName}</div></td>
-                  <td className="px-4 py-1 font-normal">{r.description}</td><td className="px-4 py-1 text-center font-normal">{r.quantity}</td>
-                  <td className="px-4 py-1 text-right text-slate-900 font-normal">{r.totalPrice.toLocaleString()} ₽</td>
-                  <td className="px-4 py-1 text-right text-slate-900 font-normal">{r.purchasePrice.toLocaleString()} ₽</td>
+                <tr key={i} className="hover:bg-green-50 transition-colors">
+                  <td className="px-6 py-3 text-slate-400 font-bold italic">{format(parseISO(r.date), 'dd.MM.yyyy')}</td>
+                  <td className="px-6 py-3 leading-tight">
+                    <div className="font-black uppercase text-[11px] text-slate-950">{r.clientName}</div>
+                    <div className="text-[10px] font-bold text-slate-400">{r.carName}</div>
+                  </td>
+                  <td className="px-6 py-3 text-slate-600 font-medium">{r.description}</td>
+                  <td className="px-6 py-3 text-center font-bold text-slate-900">{r.quantity}</td>
+                  <td className="px-6 py-3 text-right font-black text-black">{r.totalPrice.toLocaleString()} ₽</td>
+                  <td className="px-6 py-3 text-right font-bold text-slate-400">{r.purchasePrice.toLocaleString()} ₽</td>
                 </tr>
               ))}
-              {filteredData.length === 0 && (<tr><td colSpan={6} className="py-20 text-center text-slate-400 italic font-normal bg-white">Записей не найдено</td></tr>)}
             </tbody>
           </table>
         </div>

@@ -1,10 +1,50 @@
 @import "tailwindcss";
 
 @layer base {
-  input:focus, 
-  select:focus, 
-  textarea:focus, 
-  button:focus {
-    outline: none !important;
+  :root {
+    --brand-green: #16a34a;
+    --brand-black: #0a0a0a;
   }
+
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Основной стиль кнопок */
+  .btn-action {
+    @apply bg-black text-white font-black py-2.5 px-6 rounded-xl 
+           transition-all duration-300 hover:bg-green-600 active:scale-95 
+           shadow-md flex items-center gap-2 uppercase text-[10px] tracking-normal cursor-pointer;
+  }
+
+  /* Поля ввода и выпадающие списки: Фокус */
+  input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: #16a34a !important;
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1) !important;
+  }
+
+  /* Стилизация всех выпадающих списков */
+  select {
+    appearance: none;
+    /* Кастомная стрелочка SVG */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  select:hover {
+    @apply border-slate-300 shadow-sm;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #16a34a; }
 }
