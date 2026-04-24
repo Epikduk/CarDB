@@ -18,6 +18,9 @@ export interface Car {
   vin: string;
   brand: string;
   model: string;
+  year: string;
+  licensePlate: string;
+  carNote: string;
   records: MaintenanceRecord[];
 }
 

@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Client, Car, MaintenanceRecord, AppData } from '../types';
 
-const initialData: AppData = {
-  clients: [],
-  cars: [],
-  noteOptions: [] 
-};
+const initialData: AppData = { clients: [], cars: [], noteOptions: [] };
 
 export function useStorage() {
   const [data, setData] = useState<AppData>(initialData);
@@ -14,33 +10,28 @@ export function useStorage() {
 
   useEffect(() => {
     window.electronAPI.readDB().then((savedData) => {
-      if (savedData) {
-        setData(prev => ({
-          ...initialData,
-          ...savedData,
-          noteOptions: savedData.noteOptions || [] 
-        }));
-      }
+      if (savedData) setData(prev => ({ ...initialData, ...savedData }));
       setIsLoaded(true);
     });
   }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
     window.electronAPI.writeDB(data);
   }, [data, isLoaded]);
 
-  const addClient = (fullName: string, phone: string, vin: string, brand: string, model: string) => {
+  // СОЗДАНИЕ ТОЛЬКО КЛИЕНТА
+  const addClient = (fullName: string, phone: string) => {
     const clientId = crypto.randomUUID();
-    const carId = crypto.randomUUID();
+    const newClient = { id: clientId, fullName, phone };
+    setData(prev => ({ ...prev, clients: [...prev.clients, newClient] }));
+  };
+
+  const updateClient = (id: string, updatedFields: Partial<Client>) => {
     setData(prev => ({
       ...prev,
-      clients: [...prev.clients, { id: clientId, fullName, phone }],
-      cars: [...prev.cars, { id: carId, clientId, vin, brand, model, records: [] }]
+      clients: prev.clients.map(c => c.id === id ? { ...c, ...updatedFields } : c)
     }));
   };
 
@@ -52,55 +43,50 @@ export function useStorage() {
     }));
   };
 
-  // НОВАЯ ФУНКЦИЯ: Удаление конкретного автомобиля
-  const deleteCar = (carId: string) => {
+  const addCarToClient = (clientId: string, carData: any) => {
+    const newCar = { id: crypto.randomUUID(), clientId, records: [], ...carData };
+    setData(prev => ({ ...prev, cars: [...prev.cars, newCar] }));
+  };
+
+  const updateCar = (id: string, updatedFields: Partial<Car>) => {
     setData(prev => ({
       ...prev,
-      cars: prev.cars.filter(car => car.id !== carId)
+      cars: prev.cars.map(c => c.id === id ? { ...c, ...updatedFields } : c)
     }));
   };
 
-  const addCarToClient = (clientId: string, vin: string, brand: string, model: string) => {
-    const carId = crypto.randomUUID();
-    setData(prev => ({
-      ...prev,
-      cars: [...prev.cars, { id: carId, clientId, vin, brand, model, records: [] }]
-    }));
+  const deleteCar = (carId: string) => {
+    setData(prev => ({ ...prev, cars: prev.cars.filter(car => car.id !== carId) }));
   };
 
   const addRecord = (carId: string, record: Omit<MaintenanceRecord, 'id'>) => {
     setData(prev => ({
       ...prev,
-      cars: prev.cars.map(car => 
-        car.id === carId ? { ...car, records: [...car.records, { ...record, id: crypto.randomUUID() }] } : car
-      )
+      cars: prev.cars.map(car => car.id === carId ? { ...car, records: [...car.records, { ...record, id: crypto.randomUUID() }] } : car)
+    }));
+  };
+
+  const updateRecord = (carId: string, recordId: string, updatedFields: Partial<MaintenanceRecord>) => {
+    setData(prev => ({
+      ...prev,
+      cars: prev.cars.map(car => car.id === carId ? {
+        ...car,
+        records: car.records.map(r => r.id === recordId ? { ...r, ...updatedFields } : r)
+      } : car)
     }));
   };
 
   const deleteRecord = (carId: string, recordId: string) => {
-    setData(prev => ({
-      ...prev,
-      cars: prev.cars.map(car => 
-        car.id === carId ? { ...car, records: car.records.filter(r => r.id !== recordId) } : car
-      )
-    }));
+    setData(prev => ({ ...prev, cars: prev.cars.map(car => car.id === carId ? { ...car, records: car.records.filter(r => r.id !== recordId) } : car) }));
   };
 
-  const updateNoteOptions = (newOptions: string[]) => {
-    setData(prev => ({ ...prev, noteOptions: newOptions }));
-  };
+  const updateNoteOptions = (newOptions: string[]) => { setData(prev => ({ ...prev, noteOptions: newOptions })); };
 
   return {
-    isLoaded,
-    clients: data.clients,
-    cars: data.cars,
-    noteOptions: data.noteOptions,
-    addClient,
-    deleteClient,
-    deleteCar, // Экспортируем функцию
-    addCarToClient,
-    addRecord,
-    deleteRecord,
+    isLoaded, clients: data.clients, cars: data.cars, noteOptions: data.noteOptions,
+    addClient, updateClient, deleteClient,
+    addCarToClient, updateCar, deleteCar,
+    addRecord, updateRecord, deleteRecord,
     updateNoteOptions
   };
 }
