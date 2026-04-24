@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowLeft, Download, Calendar, Users, Car as CarIcon } from 'lucide-react';
+import { Download, Calendar, Users, Car as CarIcon } from 'lucide-react';
 import { format, isWithinInterval, parseISO, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Car, Client } from '../types';
@@ -72,13 +72,11 @@ export function Reporting({ cars, clients, onBack }: ReportingProps) {
 
   return (
     <div className="p-4 max-w-7xl mx-auto animate-in fade-in duration-500 font-normal text-slate-700">
-      <button onClick={onBack} className="flex items-center gap-2 text-slate-500 hover:text-slate-800 mb-6 font-medium transition-colors"><ArrowLeft size={18} /> <span>На главную</span></button>
-      
       <div className="mb-6">
         <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Отчетность</h1>
       </div>
 
-      {/* ПАНЕЛЬ ИТОГОВ ПЕРЕМЕЩЕНА НАВЕРХ */}
+      {/* ПАНЕЛЬ ИТОГОВ */}
       <div className="p-6 bg-slate-900 text-white rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6 mb-6 shadow-xl animate-in slide-in-from-top-4 duration-500">
         <div className="flex gap-10">
           <div><p className="text-[9px] text-slate-400 uppercase font-normal mb-1 tracking-widest">Итоговая сумма</p><p className="text-3xl font-black">{totals.sale.toLocaleString()} ₽</p></div>
@@ -90,59 +88,67 @@ export function Reporting({ cars, clients, onBack }: ReportingProps) {
         </div>
       </div>
 
-      {/* ФИЛЬТРЫ */}
-      <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm w-fit mb-4">
+      {/* ФИЛЬТРЫ ТИПА ОТЧЕТА */}
+      <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm w-fit mb-4 font-normal">
         {['month', 'custom'].map((mode) => (
-          <button key={mode} onClick={() => setReportMode(mode as any)} className={`px-5 py-2 rounded-lg text-xs transition-all ${reportMode === mode ? 'bg-blue-600 text-white shadow-lg font-bold' : 'text-slate-500 hover:bg-slate-50'}`}>
+          <button 
+            key={mode} 
+            onClick={() => setReportMode(mode as any)} 
+            className={`px-5 py-2 rounded-lg text-xs transition-all ${reportMode === mode ? 'bg-blue-600 text-white shadow-lg font-bold' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
             {mode === 'month' ? 'По месяцам' : 'Произвольный период'}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 font-normal">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 font-normal text-slate-700">
+        {/* ВЫБОР ДАТЫ */}
         <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-end">
           {reportMode === 'month' ? (
             <>
               <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Месяц</label>
-                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}>{months.map((m, i) => <option key={i} value={i}>{m}</option>)}</select>
+                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}>{months.map((m, i) => <option key={i} value={i}>{m}</option>)}</select>
               </div>
               <div className="w-24"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Год</label>
-                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}>{years.map(y => <option key={y} value={y}>{y}</option>)}</select>
+                <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}>{years.map(y => <option key={y} value={y}>{y}</option>)}</select>
               </div>
             </>
           ) : (
-            <><div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">От</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={customRange.start} onChange={e => setCustomRange({...customRange, start: e.target.value})} /></div>
-              <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">До</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={customRange.end} onChange={e => setCustomRange({...customRange, end: e.target.value})} /></div>
+            <><div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">От</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={customRange.start} onChange={e => setCustomRange({...customRange, start: e.target.value})} /></div>
+              <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">До</label><input type="date" className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={customRange.end} onChange={e => setCustomRange({...customRange, end: e.target.value})} /></div>
             </>
           )}
         </div>
+
+        {/* ВЫБОР КЛИЕНТА / АВТО */}
         <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-end font-normal">
-          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Клиент</label>
-            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={filterClientId} onChange={e => { setFilterClientId(e.target.value); setFilterCarId('all'); }}>
+          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1 font-normal">Клиент</label>
+            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={filterClientId} onChange={e => { setFilterClientId(e.target.value); setFilterCarId('all'); }}>
               <option value="all">Все клиенты</option>{clients.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
             </select>
           </div>
-          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Машина</label>
-            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm" value={filterCarId} onChange={e => setFilterCarId(e.target.value)} disabled={filterClientId === 'all'}>
+          <div className="flex-1"><label className="block text-[9px] font-bold text-slate-400 uppercase mb-1 font-normal">Машина</label>
+            <select className="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-sm font-medium" value={filterCarId} onChange={e => setFilterCarId(e.target.value)} disabled={filterClientId === 'all'}>
               <option value="all">Все машины</option>{availableCars.map(c => <option key={c.id} value={c.id}>{c.brand} {c.model}</option>)}
             </select>
           </div>
-          <button onClick={exportPDF} className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-9 rounded-lg flex items-center gap-2 font-bold shadow-lg active:scale-95 transition-all text-xs"><Download size={16} /> Скачать PDF</button>
+          <button onClick={exportPDF} className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-9 rounded-lg flex items-center gap-2 font-bold shadow-lg active:scale-95 transition-all text-xs font-normal"><Download size={16} /> Скачать PDF</button>
         </div>
       </div>
 
+      {/* ТАБЛИЦА */}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden font-normal text-slate-700">
         <div className="overflow-auto max-h-[calc(100vh-450px)] bg-white">
           <table className="w-full text-left border-collapse min-w-[1100px]">
             <thead className="sticky top-0 bg-slate-50 z-10 shadow-sm border-b">
-              <tr className="text-slate-500 text-[10px] font-normal uppercase tracking-widest border-b"><th className="px-4 py-2">Дата</th><th className="px-4 py-2">Клиент / Автомобиль</th><th className="px-4 py-2">Описание</th><th className="px-4 py-2 text-center">Количество</th><th className="px-4 py-2 text-right">Итоговая сумма</th><th className="px-4 py-2 text-right">Закупка</th></tr>
+              <tr className="text-slate-500 text-[10px] font-normal uppercase tracking-widest border-b font-normal"><th className="px-4 py-2 font-normal">Дата</th><th className="px-4 py-2 font-normal">Клиент / Автомобиль</th><th className="px-4 py-2 font-normal">Описание</th><th className="px-4 py-2 text-center font-normal">Количество</th><th className="px-4 py-2 text-right font-normal">Итоговая сумма</th><th className="px-4 py-2 text-right font-normal">Закупка</th></tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-[13px] font-normal text-slate-700">
               {filteredData.map((r, i) => (
                 <tr key={i} className="hover:bg-slate-50 transition-colors font-normal">
                   <td className="px-4 py-1 text-slate-500 font-normal whitespace-nowrap">{format(parseISO(r.date), 'dd.MM.yyyy')}</td>
-                  <td className="px-4 py-1 leading-tight font-normal text-slate-800"><div className="uppercase text-[10px]">{r.clientName}</div><div className="text-[10px] text-slate-400 font-normal">{r.carName}</div></td>
-                  <td className="px-4 py-1">{r.description}</td><td className="px-4 py-1 text-center">{r.quantity}</td>
+                  <td className="px-4 py-1 leading-tight font-normal text-slate-800"><div className="uppercase text-[10px] font-normal">{r.clientName}</div><div className="text-[10px] text-slate-400 font-normal">{r.carName}</div></td>
+                  <td className="px-4 py-1 font-normal">{r.description}</td><td className="px-4 py-1 text-center font-normal">{r.quantity}</td>
                   <td className="px-4 py-1 text-right text-slate-900 font-normal">{r.totalPrice.toLocaleString()} ₽</td>
                   <td className="px-4 py-1 text-right text-slate-900 font-normal">{r.purchasePrice.toLocaleString()} ₽</td>
                 </tr>
