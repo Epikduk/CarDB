@@ -21,20 +21,12 @@ export function ClientList({ clients, cars, addClient, updateClient, deleteClien
     const term = searchTerm.toLowerCase();
     return clients.map(client => {
       const clientCars = cars.filter(car => car.clientId === client.id);
-      
       const filteredCars = clientCars.filter(car => {
         const carInfo = (car.brand + car.model + car.vin + (car.licensePlate || '')).toLowerCase();
-        // ПОИСК ПО ОПИСАНИЮ В ИСТОРИИ
         const historyMatch = car.records.some(r => r.description.toLowerCase().includes(term));
         return carInfo.includes(term) || historyMatch;
       });
-
-      return { 
-        client, 
-        clientCars, 
-        filteredCars, 
-        hasClientMatch: (client.fullName + client.phone).toLowerCase().includes(term) 
-      };
+      return { client, clientCars, filteredCars, hasClientMatch: (client.fullName + client.phone).toLowerCase().includes(term) };
     }).filter(g => g.hasClientMatch || g.filteredCars.length > 0);
   }, [clients, cars, searchTerm]);
 
@@ -49,13 +41,12 @@ export function ClientList({ clients, cars, addClient, updateClient, deleteClien
 
       <div className="relative mb-6">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-        <input type="text" placeholder="Поиск (имя, VIN, госномер, описание работ)..." className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+        <input type="text" placeholder="Поиск по базе..." className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all font-normal" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
       </div>
 
       <div className="grid grid-cols-1 gap-4">
         {groupedData.map(({ client, clientCars, filteredCars }) => {
           const displayCars = searchTerm ? filteredCars : clientCars;
-
           return (
             <div key={client.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:border-slate-300 transition-all">
               <div className="p-4 bg-slate-50/50 border-b flex justify-between items-center">
@@ -78,9 +69,9 @@ export function ClientList({ clients, cars, addClient, updateClient, deleteClien
                   <div key={car.id} onClick={() => onSelectCar(car.id)} className="group flex items-center justify-between p-3 rounded-xl hover:bg-blue-50 transition-all cursor-pointer border border-transparent hover:border-blue-100 mb-0.5">
                     <div className="flex items-center gap-4">
                       <div className="p-2 bg-slate-100 text-slate-500 rounded-lg group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><CarIcon size={20}/></div>
-                      <div>
+                      <div className="font-normal">
                         <div className="text-sm font-bold text-slate-800">{car.brand} {car.model} <span className="text-slate-400 font-normal ml-2">{car.year}</span></div>
-                        <div className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">VIN: {car.vin} | ГРЗ: {car.licensePlate || '—'}</div>
+                        <div className="text-[10px] font-normal text-slate-500 uppercase tracking-tight">VIN: {car.vin} | ГРЗ: {car.licensePlate || '—'}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
@@ -95,25 +86,9 @@ export function ClientList({ clients, cars, addClient, updateClient, deleteClien
         })}
       </div>
 
-      <AddClientModal 
-        isOpen={modal.type === 'addClient' || modal.type === 'editClient'} 
-        onClose={() => setModal({ type: null })} 
-        onAdd={(name: string, phone: string) => modal.type === 'editClient' ? updateClient(modal.data.id, { fullName: name, phone }) : addClient(name, phone)}
-        initialData={modal.type === 'editClient' ? modal.data : null}
-      />
-      <AddCarModal 
-        isOpen={modal.type === 'addCar' || modal.type === 'editCar'} 
-        onClose={() => setModal({ type: null })} 
-        clientId={modal.type === 'addCar' ? modal.data : modal.data?.clientId}
-        onAdd={(cid: string, car: any) => modal.type === 'editCar' ? updateCar(modal.data.id, car) : addCarToClient(cid, car)}
-        initialData={modal.type === 'editCar' ? modal.data : null}
-      />
-      <ConfirmModal 
-        isOpen={confirm.isOpen} onClose={() => setConfirm({ ...confirm, isOpen: false })} 
-        onConfirm={() => confirm.type === 'client' ? deleteClient(confirm.id) : deleteCar(confirm.id)}
-        title={confirm.type === 'client' ? "Удаление клиента" : "Удаление авто"}
-        message={`Вы действительно хотите удалить ${confirm.name}?`}
-      />
+      <AddClientModal isOpen={modal.type === 'addClient' || modal.type === 'editClient'} onClose={() => setModal({ type: null })} onAdd={(name: string, phone: string, car: any) => modal.type === 'editClient' ? updateClient(modal.data.id, { fullName: name, phone }) : addClient(name, phone, car)} initialData={modal.type === 'editClient' ? modal.data : null} />
+      <AddCarModal isOpen={modal.type === 'addCar' || modal.type === 'editCar'} onClose={() => setModal({ type: null })} clientId={modal.type === 'addCar' ? modal.data : modal.data?.clientId} onAdd={(cid: string, car: any) => modal.type === 'editCar' ? updateCar(modal.data.id, car) : addCarToClient(cid, car)} initialData={modal.type === 'editCar' ? modal.data : null} />
+      <ConfirmModal isOpen={confirm.isOpen} onClose={() => setConfirm({ ...confirm, isOpen: false })} onConfirm={() => confirm.type === 'client' ? deleteClient(confirm.id) : deleteCar(confirm.id)} title={confirm.type === 'client' ? "Удаление клиента" : "Удаление авто"} message={`Вы действительно хотите удалить ${confirm.name}?`} />
     </div>
   );
 }

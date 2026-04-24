@@ -21,11 +21,19 @@ export function useStorage() {
     window.electronAPI.writeDB(data);
   }, [data, isLoaded]);
 
-  // СОЗДАНИЕ ТОЛЬКО КЛИЕНТА
-  const addClient = (fullName: string, phone: string) => {
+  const addClient = (fullName: string, phone: string, carData: any) => {
     const clientId = crypto.randomUUID();
     const newClient = { id: clientId, fullName, phone };
-    setData(prev => ({ ...prev, clients: [...prev.clients, newClient] }));
+    const newCar = { 
+      id: crypto.randomUUID(), clientId, records: [],
+      vin: carData.vin, brand: carData.brand, model: carData.model,
+      year: carData.year, licensePlate: carData.licensePlate, carNote: carData.carNote
+    };
+    setData(prev => ({ 
+      ...prev, 
+      clients: [...prev.clients, newClient], 
+      cars: [...prev.cars, newCar] 
+    }));
   };
 
   const updateClient = (id: string, updatedFields: Partial<Client>) => {
