@@ -2,15 +2,18 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+app.setAppUserModelId('com.broncomparts.app'); 
+
 const isDev = !app.isPackaged;
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
-    title: "BroncomParts", // Новое название
-    icon: path.join(__dirname, '../icon.ico'), // Путь к иконке
-    backgroundColor: '#0a0b0d', // Цвет фона при загрузке
+    title: "BroncomParts",
+    // Исправленный путь для иконки (работает и в dev, и в build)
+    icon: path.join(__dirname, isDev ? '../icon.ico' : '../icon.ico'), 
+    backgroundColor: '#0a0b0d',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,

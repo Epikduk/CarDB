@@ -46,10 +46,12 @@
     },
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "icon.ico" 
     ],
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "icon.ico"
     }
   }
 }

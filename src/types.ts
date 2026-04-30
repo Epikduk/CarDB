@@ -10,6 +10,7 @@ export interface MaintenanceRecord {
   totalPrice: number;
   purchasePrice: number;
   note: string;
+  status?: number;
 }
 
 export interface Car {
