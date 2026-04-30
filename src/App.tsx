@@ -3,7 +3,7 @@ import { Home } from './pages/Home';
 import { ClientList } from './pages/ClientList';
 import { CarDetails } from './pages/CarDetails';
 import { Reporting } from './pages/Reporting';
-import { Settings, Home as HomeIcon, Layout as LayoutIcon } from 'lucide-react';
+import { Settings, Home as HomeIcon } from 'lucide-react';
 import { useStorage } from './hooks/useStorage';
 import { SettingsModal } from './components/SettingsModal';
 import logo from './logo.png';
@@ -14,6 +14,10 @@ function App() {
   const storage = useStorage();
   const [currentView, setCurrentView] = useState<View>({ type: 'home' });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // --- НОВЫЕ СОСТОЯНИЯ ДЛЯ СОХРАНЕНИЯ UI ---
+  const [expandedClientIds, setExpandedClientIds] = useState<Set<string>>(new Set());
+  const [clientListScrollPos, setClientListScrollPos] = useState(0);
 
   if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center font-bold">Загрузка BroncomParts...</div>;
 
@@ -44,14 +48,25 @@ function App() {
 
       <main>
         {currentView.type === 'home' && <Home onNavigate={(type) => setCurrentView({ type })} />}
+        
         {currentView.type === 'list' && (
           <ClientList 
             clients={storage.clients} cars={storage.cars}
             addClient={storage.addClient} updateClient={storage.updateClient} deleteClient={storage.deleteClient}
             addCarToClient={storage.addCarToClient} updateCar={storage.updateCar} deleteCar={storage.deleteCar}
-            onSelectCar={(carId) => setCurrentView({ type: 'details', carId })} 
+            onSelectCar={(carId: string) => {
+              // Сохраняем скролл перед уходом
+              setClientListScrollPos(window.scrollY);
+              setCurrentView({ type: 'details', carId });
+            }} 
+            // Передаем стейты сохранения
+            expandedClientIds={expandedClientIds}
+            setExpandedClientIds={setExpandedClientIds}
+            scrollPos={clientListScrollPos}
+            setScrollPos={setClientListScrollPos}
           />
         )}
+
         {currentView.type === 'details' && (
           <CarDetails 
             carId={currentView.carId!} clients={storage.clients} cars={storage.cars} noteOptions={storage.noteOptions}
