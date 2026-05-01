@@ -50,7 +50,7 @@
       "icon.ico" 
     ],
     "win": {
-      "target": "portable",
+      "target": ["portable", "dir"],
       "icon": "icon.ico"
     }
   }

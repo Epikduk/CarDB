@@ -56,7 +56,8 @@
           "purchasePrice": 1678,
           "note": "то",
           "id": "9b17e02c-673e-4e65-bd6e-29e281d4342e",
-          "status": 0
+          "status": 2,
+          "prepayment": 0
         },
         {
           "date": "2026-04-23",
@@ -70,7 +71,7 @@
           "purchasePrice": 1678,
           "note": "—",
           "id": "f8e8914b-99ee-4dfc-a3d9-1f67a95517ec",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-23",
@@ -84,7 +85,7 @@
           "purchasePrice": 928,
           "note": "—",
           "id": "84e61d9c-f234-4bad-b39a-e9625f815f10",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-23",
@@ -98,7 +99,8 @@
           "purchasePrice": 11850,
           "note": "—",
           "id": "4922f265-fac6-4560-9889-64847c35422b",
-          "status": 0
+          "status": 2,
+          "prepayment": 0
         },
         {
           "date": "2026-04-23",
@@ -112,7 +114,7 @@
           "purchasePrice": 7132,
           "note": "—",
           "id": "b2d88a8d-8333-4907-b7af-30abd62f8860",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-23",
@@ -126,7 +128,7 @@
           "purchasePrice": 373,
           "note": "—",
           "id": "27854ecd-9f9b-4326-8a42-8f49dbfec5c5",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-23",
@@ -140,7 +142,7 @@
           "purchasePrice": 1738,
           "note": "—",
           "id": "a12236f7-6159-4da0-9a15-5db95f9c24b1",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-23",
@@ -154,24 +156,55 @@
           "purchasePrice": 1394,
           "note": "—",
           "id": "5163f974-40d4-4c2c-aed7-22e1192c28b7",
-          "status": 0
+          "status": 2
         },
         {
-          "date": "2026-04-23",
-          "catalogNumber": "88250108602",
-          "brand": "DIAMOND",
-          "description": "Пыльник двигателя пластик",
-          "quantity": 1,
-          "unitPriceSale": 800,
-          "unitPricePurchase": 526,
-          "totalPrice": 800,
-          "purchasePrice": 526,
-          "note": "—",
-          "id": "9d6648b9-f5cc-4e4f-a8cf-d6a66df76ac9",
-          "status": 0
+          "date": "2026-05-01",
+          "catalogNumber": "3423",
+          "brand": "423",
+          "description": "32",
+          "quantity": 1432,
+          "unitPriceSale": "32432",
+          "unitPricePurchase": "3243",
+          "note": "ПрофитЛига",
+          "status": 1,
+          "totalPrice": 46442624,
+          "purchasePrice": 4643976,
+          "prepayment": 0,
+          "id": "80ca9f1f-76ae-4fdd-99dd-0d7b5c87f641"
+        },
+        {
+          "date": "2026-05-01",
+          "catalogNumber": "324",
+          "brand": "432",
+          "description": "432",
+          "quantity": 421,
+          "unitPriceSale": "12",
+          "unitPricePurchase": "321321",
+          "note": "Автолавка",
+          "status": 1,
+          "totalPrice": 5052,
+          "purchasePrice": 135276141,
+          "prepayment": 0,
+          "id": "9d4d4725-c34b-4cf9-a394-e36afddc48e4"
+        },
+        {
+          "date": "2026-05-01",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 2,
+          "unitPriceSale": "123",
+          "unitPricePurchase": "123",
+          "note": "Автолавка",
+          "status": 1,
+          "totalPrice": 246,
+          "purchasePrice": 246,
+          "prepayment": 0,
+          "id": "8576687e-03b0-497f-87d2-5e5abd7e7c79"
         }
       ],
-      "carNote": "",
+      "carNote": "1244241242142142 впва в пвап п ва",
       "year": "2013",
       "licensePlate": "р369уо26"
     },
@@ -479,7 +512,7 @@
           "unitPricePurchase": "928",
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 0,
+          "status": 1,
           "totalPrice": 1350,
           "purchasePrice": 928,
           "id": "e87aa2fd-88bd-42b7-a67f-7a2fb283c75b"
@@ -494,7 +527,7 @@
           "unitPricePurchase": "3451",
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 0,
+          "status": 1,
           "totalPrice": 4100,
           "purchasePrice": 3451,
           "id": "6fdccad3-bcc6-4f82-a6e0-f8c1e59fa791"
@@ -509,7 +542,7 @@
           "unitPricePurchase": "2627",
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 0,
+          "status": 1,
           "totalPrice": 3450,
           "purchasePrice": 2627,
           "id": "1c29ef05-c808-4dd7-b636-274ef3edd5d7"
@@ -596,7 +629,7 @@
           "unitPricePurchase": 0,
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 0,
+          "status": 1,
           "totalPrice": 0,
           "purchasePrice": 0,
           "id": "a2d8fb82-281c-4a78-8f3c-14757cdca6c0"
@@ -942,6 +975,66 @@
           "totalPrice": 1200,
           "purchasePrice": 0,
           "id": "f63be58f-0f7d-4fd3-93e5-8b2bb5e3cb23"
+        },
+        {
+          "date": "2026-04-16",
+          "catalogNumber": "234",
+          "brand": "23",
+          "description": "32",
+          "quantity": 231,
+          "unitPriceSale": "43",
+          "unitPricePurchase": "234",
+          "note": "Автолиния",
+          "status": 0,
+          "totalPrice": 9933,
+          "purchasePrice": 54054,
+          "prepayment": 0,
+          "id": "1f0eeba7-9b0d-4756-96b9-947885e8a443"
+        },
+        {
+          "date": "2026-04-16",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": "",
+          "unitPricePurchase": "",
+          "note": "Автолавка",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "4a964ebc-08ff-4529-8284-656778b73786"
+        },
+        {
+          "date": "2026-04-16",
+          "catalogNumber": "",
+          "brand": "цу312",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "Автолавка",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "feebbaba-835a-4bfc-9a1c-946c0f9d5dc1"
+        },
+        {
+          "date": "2026-04-16",
+          "catalogNumber": "",
+          "brand": "12аА",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": "",
+          "unitPricePurchase": "",
+          "note": "Автолавка",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "8078ce9d-8ba2-489c-9227-db50b7af4e79"
         }
       ],
       "vin": "xw7bf4fkx0s016839",

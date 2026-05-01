@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-app.setAppUserModelId('com.broncomparts.app'); 
+// Устанавливаем ID для корректного отображения одной иконки на панели задач
+app.setAppUserModelId('com.broncomparts.app');
 
 const isDev = !app.isPackaged;
 
@@ -11,8 +12,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     title: "BroncomParts",
-    // Исправленный путь для иконки (работает и в dev, и в build)
-    icon: path.join(__dirname, isDev ? '../icon.ico' : '../icon.ico'), 
+    icon: path.join(__dirname, '../icon.ico'),
     backgroundColor: '#0a0b0d',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
@@ -21,9 +21,23 @@ function createWindow() {
     }
   });
 
+  // ВКЛЮЧАЕМ КОПИРОВАНИЕ МЫШКОЙ
+  win.webContents.on('context-menu', (event, params) => {
+    const menu = new Menu();
+    if (params.editFlags.canCopy) {
+      menu.append(new MenuItem({ label: 'Копировать', role: 'copy' }));
+    }
+    if (params.editFlags.canPaste) {
+      menu.append(new MenuItem({ label: 'Вставить', role: 'paste' }));
+    }
+    if (params.editFlags.canSelectAll) {
+      menu.append(new MenuItem({ label: 'Выделить всё', role: 'selectAll' }));
+    }
+    if (menu.items.length > 0) menu.popup();
+  });
+
   if (isDev) {
     win.loadURL('http://localhost:5173');
-    // ДОБАВЬТЕ ЭТУ СТРОКУ:
     win.webContents.openDevTools(); 
   } else {
     win.loadFile(path.join(__dirname, '../dist/index.html'));
@@ -32,17 +46,18 @@ function createWindow() {
   win.setMenu(null);
 }
 
-// ФУНКЦИЯ ОПРЕДЕЛЕНИЯ ПУТИ (Исправленная)
+// ВОЗВРАЩАЕМ ПУТЬ К ФАЙЛУ РЯДОМ С ПРИЛОЖЕНИЕМ
 const getDbPath = () => {
   let dbPath;
   
   if (isDev) {
+    // В режиме разработки — корень папки проекта
     dbPath = path.join(process.cwd(), 'car_db.json');
   } else if (process.env.PORTABLE_EXECUTABLE_DIR) {
-    // Для Portable версии это папка, где лежит сам .exe
+    // Для Portable версии — папка, где лежит сам .exe
     dbPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'car_db.json');
   } else {
-    // Для обычной установки
+    // Для обычной установки — папка с .exe
     dbPath = path.join(path.dirname(app.getPath('exe')), 'car_db.json');
   }
   
@@ -52,32 +67,26 @@ const getDbPath = () => {
 // ЧТЕНИЕ
 ipcMain.handle('read-db', async () => {
   const dbPath = getDbPath();
-  console.log("Попытка чтения базы по пути:", dbPath); // Это будет видно в терминале
+  console.log("Читаю базу из:", dbPath);
 
   if (fs.existsSync(dbPath)) {
     const data = fs.readFileSync(dbPath, 'utf-8');
     return JSON.parse(data);
   } else {
-    const initialData = { clients: [], cars: [] };
+    const initialData = { clients: [], cars: [], noteOptions: [] };
     fs.writeFileSync(dbPath, JSON.stringify(initialData, null, 2));
     return initialData;
   }
 });
 
-// ЗАПИСЬ (С принудительным сбросом буфера на диск)
+// ЗАПИСЬ
 ipcMain.handle('write-db', async (event, data) => {
   const dbPath = getDbPath();
-  
-  // Проверка: если данных нет, не пытаемся записывать
-  if (data === undefined) {
-    console.error("Попытка записи undefined данных!");
-    return false;
-  }
+  if (data === undefined) return false;
 
   try {
     const content = JSON.stringify(data, null, 2);
     fs.writeFileSync(dbPath, content, 'utf-8');
-    console.log("Данные успешно записаны в:", dbPath);
     return true;
   } catch (error) {
     console.error("ОШИБКА ЗАПИСИ:", error);
