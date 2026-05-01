@@ -45,7 +45,7 @@
       "model": "Octavia",
       "records": [
         {
-          "date": "2026-04-24",
+          "date": "2026-04-23",
           "catalogNumber": "CB0452L",
           "brand": "CTR",
           "description": "Опора шаровая левая",
@@ -56,8 +56,7 @@
           "purchasePrice": 1678,
           "note": "то",
           "id": "9b17e02c-673e-4e65-bd6e-29e281d4342e",
-          "status": 2,
-          "prepayment": 0
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -71,8 +70,7 @@
           "purchasePrice": 1678,
           "note": "—",
           "id": "f8e8914b-99ee-4dfc-a3d9-1f67a95517ec",
-          "status": 2,
-          "prepayment": 0
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -86,7 +84,7 @@
           "purchasePrice": 928,
           "note": "—",
           "id": "84e61d9c-f234-4bad-b39a-e9625f815f10",
-          "status": 2
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -100,7 +98,7 @@
           "purchasePrice": 11850,
           "note": "—",
           "id": "4922f265-fac6-4560-9889-64847c35422b",
-          "status": 2
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -114,7 +112,7 @@
           "purchasePrice": 7132,
           "note": "—",
           "id": "b2d88a8d-8333-4907-b7af-30abd62f8860",
-          "status": 2
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -128,7 +126,7 @@
           "purchasePrice": 373,
           "note": "—",
           "id": "27854ecd-9f9b-4326-8a42-8f49dbfec5c5",
-          "status": 2
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -142,7 +140,7 @@
           "purchasePrice": 1738,
           "note": "—",
           "id": "a12236f7-6159-4da0-9a15-5db95f9c24b1",
-          "status": 2
+          "status": 0
         },
         {
           "date": "2026-04-23",
@@ -156,7 +154,21 @@
           "purchasePrice": 1394,
           "note": "—",
           "id": "5163f974-40d4-4c2c-aed7-22e1192c28b7",
-          "status": 2
+          "status": 0
+        },
+        {
+          "date": "2026-04-23",
+          "catalogNumber": "88250108602",
+          "brand": "DIAMOND",
+          "description": "Пыльник двигателя пластик",
+          "quantity": 1,
+          "unitPriceSale": 800,
+          "unitPricePurchase": 526,
+          "totalPrice": 800,
+          "purchasePrice": 526,
+          "note": "—",
+          "id": "9d6648b9-f5cc-4e4f-a8cf-d6a66df76ac9",
+          "status": 0
         }
       ],
       "carNote": "",
@@ -229,7 +241,7 @@
           "totalPrice": 2000,
           "purchasePrice": 1298,
           "id": "5f7ceb75-1305-4129-8288-647f597f985b",
-          "status": 0
+          "status": 2
         },
         {
           "date": "2026-04-24",
@@ -243,8 +255,7 @@
           "totalPrice": 3000,
           "purchasePrice": 2343,
           "id": "338c3998-3120-43f1-b203-50bd976f41bc",
-          "status": 0,
-          "prepayment": 123
+          "status": 0
         },
         {
           "date": "2026-04-24",
@@ -257,8 +268,7 @@
           "note": "АвтоТО",
           "totalPrice": 3000,
           "purchasePrice": 2343,
-          "id": "7ab5efbc-fb1f-42f3-9d11-9b5d507abf6c",
-          "status": 0
+          "id": "7ab5efbc-fb1f-42f3-9d11-9b5d507abf6c"
         }
       ],
       "vin": "XW8LJ6NS6KH412987",
@@ -649,18 +659,18 @@
           "id": "9e227c3b-d642-4e10-beb7-d4dd711b6108"
         },
         {
-          "date": "2026-04-25",
-          "catalogNumber": "8300771772",
-          "brand": "MAZDA",
-          "description": "Масло моторное MAZDA ORIGINAL OIL ULTRA 5W30",
+          "date": "2026-04-30",
+          "catalogNumber": "7530",
+          "brand": "LIQUI MOLY",
+          "description": "Масло моторное Special Tec AA 5W-30 SP GF-6A 5л",
           "quantity": 1,
-          "unitPriceSale": "7330",
-          "unitPricePurchase": "5927",
+          "unitPriceSale": "8200",
+          "unitPricePurchase": "6157",
           "note": "АвтоТО",
           "prepayment": 0,
           "status": 1,
-          "totalPrice": 7330,
-          "purchasePrice": 5927,
+          "totalPrice": 8200,
+          "purchasePrice": 6157,
           "id": "0310da0c-b58b-4f9a-ba7a-a76775f178f8"
         }
       ],

@@ -13,14 +13,19 @@ export function ClientList({
   const [modal, setModal] = useState<{ type: any, data?: any }>({ type: null });
   const [confirm, setConfirm] = useState({ isOpen: false, id: '', name: '', type: 'client' as 'client' | 'car' });
 
-  // --- ЛОГИКА СКРОЛЛА ---
+  // --- ЛОГИКА ВОССТАНОВЛЕНИЯ СКРОЛЛА ---
   useLayoutEffect(() => {
-    // Восстанавливаем позицию скролла при загрузке страницы
-    window.scrollTo(0, scrollPos);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, scrollPos);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
+  // --- ЛОГИКА СОХРАНЕНИЯ СКРОЛЛА ---
   useEffect(() => {
-    const handleScroll = () => setScrollPos(window.scrollY);
+    const handleScroll = () => {
+      setScrollPos(window.scrollY);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [setScrollPos]);
@@ -78,17 +83,19 @@ export function ClientList({
           
           return (
             <div key={client.id} className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden hover:border-green-500/20 transition-all">
-              {/* Шапка клиента (Кликабельная для раскрытия) */}
+              {/* Шапка клиента */}
               <div 
                 onClick={() => toggleExpand(client.id)}
-                className="p-4 bg-slate-50/50 border-b flex justify-between items-center cursor-pointer group/card"
+                className={`p-4 bg-slate-50/50 flex justify-between items-center cursor-pointer group/card relative z-10 transition-all border-b ${
+                  isExpanded ? 'border-slate-200' : 'border-transparent'
+                }`}
               >
                 <div className="flex items-center gap-4">
                   <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                     <ChevronDown size={20} className="text-slate-300 group-hover/card:text-green-600" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 text-left">
                       <h3 className="text-lg font-black text-slate-900 italic uppercase leading-none">{client.fullName}</h3>
                       <button onClick={(e) => { e.stopPropagation(); setModal({ type: 'editClient', data: client }); }} className="p-1 text-slate-300 hover:text-green-600 transition-colors">
                         <Edit2 size={14}/>
@@ -102,19 +109,19 @@ export function ClientList({
                   </div>
                 </div>
                 <div className="flex items-center gap-3" onClick={e => e.stopPropagation()}>
-                  <button onClick={() => setConfirm({ isOpen: true, id: client.id, name: client.fullName, type: 'client' })} className="p-2 text-slate-200 hover:text-red-600 transition-all"><Trash2 size={20}/></button>
+                  <button onClick={() => setConfirm({ isOpen: true, id: client.id, name: client.fullName, type: 'client' })} className="p-2 text-slate-300 hover:text-red-600 transition-all"><Trash2 size={20}/></button>
                   <button onClick={() => setModal({ type: 'addCar', data: client.id })} className="btn-action">
                     <Plus size={14}/> Добавить авто
                   </button>
                 </div>
               </div>
 
-              {/* Список машин (Раскрывающийся) */}
+              {/* Список машин */}
               {isExpanded && (
-                <div className="p-1 bg-white animate-in slide-in-from-top-2 duration-200">
+                <div className="p-1 bg-white animate-in slide-in-from-top-1 duration-200">
                   {displayCars.map((car: any) => (
                     <div key={car.id} onClick={() => onSelectCar(car.id)} className="group flex items-center justify-between p-3 rounded-xl hover:bg-green-50 transition-all cursor-pointer border border-transparent hover:border-green-100 mb-0.5">
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 text-left">
                         <div className="p-2 bg-slate-100 text-slate-400 rounded-xl group-hover:bg-green-100 group-hover:text-green-600 transition-all"><CarIcon size={20}/></div>
                         <div>
                           <div className="text-sm font-bold text-slate-800 group-hover:text-black">{car.brand} {car.model} <span className="text-slate-400 font-normal ml-2">{car.year}</span></div>
