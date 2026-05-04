@@ -97,7 +97,7 @@ export function ClientList({
             <div className="h-px bg-slate-200 my-1 mx-1"></div>
             <div className="flex gap-1">
               <button onClick={() => setStatusFilter('all')} className={controlBtnStyle(statusFilter === 'all', 'text-slate-900')}>Все</button>
-              <button onClick={() => setStatusFilter(0)} className={controlBtnStyle(statusFilter === 0, 'text-slate-900')}>Уценка</button>
+              <button onClick={() => setStatusFilter(0)} className={controlBtnStyle(statusFilter === 0, 'text-slate-900')}>Оценка</button>
               <button onClick={() => setStatusFilter(1)} className={controlBtnStyle(statusFilter === 1, 'text-yellow-600')}>Заказано</button>
               <button onClick={() => setStatusFilter(2)} className={controlBtnStyle(statusFilter === 2, 'text-green-600')}>Выполнено</button>
               <button onClick={() => setStatusFilter(3)} className={controlBtnStyle(statusFilter === 3, 'text-red-600')}>Отменено</button>

@@ -11,6 +11,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    show: false,
     title: "BroncomParts",
     icon: path.join(__dirname, '../icon.ico'),
     backgroundColor: '#0a0b0d',
@@ -20,6 +21,9 @@ function createWindow() {
       nodeIntegration: false
     }
   });
+  
+  win.maximize(); 
+  win.show(); // Теперь показываем уже развернутое окно
 
   // ВКЛЮЧАЕМ КОПИРОВАНИЕ МЫШКОЙ
   win.webContents.on('context-menu', (event, params) => {
