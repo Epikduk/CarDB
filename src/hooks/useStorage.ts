@@ -21,9 +21,19 @@ export function useStorage() {
     window.electronAPI.writeDB(data);
   }, [data, isLoaded]);
 
+  // НОВАЯ ФУНКЦИЯ: Обновление времени активности клиента
+  const updateClientActivity = (clientId: string) => {
+    setData(prev => ({
+      ...prev,
+      clients: prev.clients.map(c => 
+        c.id === clientId ? { ...c, lastActivity: Date.now() } : c
+      )
+    }));
+  };
+
   const addClient = (fullName: string, phone: string, carData: any) => {
     const clientId = crypto.randomUUID();
-    const newClient = { id: clientId, fullName, phone };
+    const newClient = { id: clientId, fullName, phone, lastActivity: Date.now() };
     const newCar = { 
       id: crypto.randomUUID(), clientId, records: [],
       vin: carData.vin, brand: carData.brand, model: carData.model,
@@ -95,6 +105,6 @@ export function useStorage() {
     addClient, updateClient, deleteClient,
     addCarToClient, updateCar, deleteCar,
     addRecord, updateRecord, deleteRecord,
-    updateNoteOptions
+    updateNoteOptions, updateClientActivity
   };
 }

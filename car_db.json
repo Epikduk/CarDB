@@ -3,47 +3,56 @@
     {
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "Клиенты Виталика",
-      "phone": "+79289115507"
+      "phone": "+79289115507",
+      "lastActivity": 1777892045989
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
       "fullName": "Виталик Джанго",
-      "phone": "+79289115507"
+      "phone": "+79289115507",
+      "lastActivity": 1777891086704
     },
     {
       "id": "fa4bd634-f121-4199-9900-659b520af900",
       "fullName": "Артем Бабад",
-      "phone": ""
+      "phone": "",
+      "lastActivity": 1777891444502
     },
     {
       "id": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
       "fullName": "Степан Ершов",
-      "phone": "+79187461135"
+      "phone": "+79187461135",
+      "lastActivity": 1777892202261
     },
     {
       "id": "1e14b14c-b81a-47a7-9549-6d3eb8043572",
       "fullName": "Анзор Берая",
-      "phone": "+79283449424"
+      "phone": "+79283449424",
+      "lastActivity": 1777892149684
     },
     {
       "id": "5ccebf55-a26f-47aa-866c-2bc1cd69d301",
       "fullName": "Георгий",
-      "phone": "+79384477777"
+      "phone": "+79384477777",
+      "lastActivity": 1777891019985
     },
     {
       "id": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
       "fullName": "Месроп Мовсисян",
-      "phone": "+79675399393"
+      "phone": "+79675399393",
+      "lastActivity": 1777892049151
     },
     {
       "id": "8bde670e-fdd4-4344-9d71-b6e5add26eb7",
       "fullName": "Виктор Дроботов",
-      "phone": ""
+      "phone": "",
+      "lastActivity": 1777892038870
     },
     {
       "id": "eab69a9a-26f5-40e4-8337-0e533e989777",
       "fullName": "Богдан Шибаков",
-      "phone": ""
+      "phone": "",
+      "lastActivity": 1777891439486
     }
   ],
   "cars": [
@@ -202,7 +211,7 @@
           "unitPricePurchase": "9056",
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 1,
+          "status": 2,
           "totalPrice": 9500,
           "purchasePrice": 9056,
           "id": "6dad3037-1e5b-4a89-a2ea-28c442e4a3b0"
@@ -345,18 +354,19 @@
       "clientId": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
       "records": [
         {
-          "date": "2026-04-23",
-          "catalogNumber": "SP1907 ",
-          "brand": "SANGSIN BRAKE",
-          "description": "Колодки тормозные дисковые, задние",
-          "quantity": 1,
-          "unitPriceSale": "1100",
-          "unitPricePurchase": "817",
-          "note": "АвтоТО",
-          "totalPrice": 1100,
-          "purchasePrice": 817,
-          "id": "bea03137-cee5-4394-a890-fb63815cfe3b",
-          "status": 1
+          "date": "2026-05-04",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 12,
+          "unitPriceSale": "20",
+          "unitPricePurchase": 0,
+          "note": "Автолавка",
+          "status": 2,
+          "totalPrice": 240,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "931bc0e1-80d3-4832-9259-f9d48cab51dd"
         }
       ],
       "vin": "xwej381ebnc004183",
@@ -607,7 +617,7 @@
           "unitPricePurchase": 0,
           "note": "АвтоТО",
           "prepayment": 0,
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "id": "a2d8fb82-281c-4a78-8f3c-14757cdca6c0"
@@ -804,7 +814,7 @@
           "unitPriceSale": "4500",
           "unitPricePurchase": "3733",
           "note": "АвтоТО",
-          "prepayment": 0,
+          "prepayment": 2312,
           "status": 2,
           "totalPrice": 4500,
           "purchasePrice": 3733,

@@ -15,9 +15,11 @@ function App() {
   const [currentView, setCurrentView] = useState<View>({ type: 'home' });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // СОСТОЯНИЯ ДЛЯ СОХРАНЕНИЯ UI
   const [expandedClientIds, setExpandedClientIds] = useState<Set<string>>(new Set());
   const [clientListScrollPos, setClientListScrollPos] = useState(0);
-  const [clientSortBy, setClientSortBy] = useState<'name' | 'cars'>('name');
+  const [clientSortBy, setClientSortBy] = useState<'name' | 'cars' | 'activity'>('name');
+  const [clientStatusFilter, setClientStatusFilter] = useState<number | 'all'>('all');
 
   if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center font-bold text-slate-900 font-sans">Загрузка BroncomParts...</div>;
 
@@ -26,7 +28,6 @@ function App() {
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-[100] shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView({ type: 'home' })}>
-            {/* Сбалансированная тень для логотипа в углу */}
             <img 
               src={logo} 
               alt="L" 
@@ -56,12 +57,15 @@ function App() {
 
       <main>
         {currentView.type === 'home' && <Home onNavigate={(type) => setCurrentView({ type })} />}
+        
         {currentView.type === 'list' && (
           <ClientList 
             clients={storage.clients} cars={storage.cars}
             addClient={storage.addClient} updateClient={storage.updateClient} deleteClient={storage.deleteClient}
             addCarToClient={storage.addCarToClient} updateCar={storage.updateCar} deleteCar={storage.deleteCar}
             onSelectCar={(carId: string) => {
+              const car = storage.cars.find(c => c.id === carId);
+              if (car) storage.updateClientActivity(car.clientId);
               setClientListScrollPos(window.scrollY);
               setCurrentView({ type: 'details', carId });
             }} 
@@ -71,8 +75,11 @@ function App() {
             setScrollPos={setClientListScrollPos}
             sortBy={clientSortBy}
             setSortBy={setClientSortBy}
+            statusFilter={clientStatusFilter}
+            setStatusFilter={setClientStatusFilter}
           />
         )}
+
         {currentView.type === 'details' && (
           <CarDetails 
             carId={currentView.carId!} clients={storage.clients} cars={storage.cars} noteOptions={storage.noteOptions}

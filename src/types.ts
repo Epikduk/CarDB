@@ -29,6 +29,7 @@ export interface Client {
   id: string;
   fullName: string;
   phone: string;
+  lastActivity?: number;
 }
 
 export interface AppData {
