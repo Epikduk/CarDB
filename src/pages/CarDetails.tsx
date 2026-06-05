@@ -17,6 +17,11 @@ export function CarDetails({
   const [formData, setFormData] = useState<any>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
+  // --- ЭФФЕКТ: СКРОЛЛ В САМЫЙ ВЕРХ ПРИ ВХОДЕ НА СТРАНИЦУ ---
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Состояния для массового изменения даты
   const [isBulkDateModalOpen, setIsBulkDateModalOpen] = useState(false);
   const [bulkDateFrom, setBulkDateFrom] = useState('');
@@ -81,7 +86,8 @@ export function CarDetails({
 
   const handleAddAtDate = (date: string) => {
     setFormData({ date, catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: sortedNoteOptions[0] || '', status: 0 });
-    setIsAdding(true); window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsAdding(true); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const updateStatus = (recordId: string, newStatus: number) => {
@@ -110,7 +116,7 @@ export function CarDetails({
   ))).sort((a, b) => b.localeCompare(a));
 
   return (
-    <div className="p-4 max-w-7xl mx-auto animate-in fade-in duration-500 text-left">
+    <div className="p-4 max-w-[1400px] mx-auto animate-in fade-in duration-500 text-left">
       <button onClick={onBack} className="flex items-center gap-2 text-slate-400 mb-4 font-bold uppercase text-[10px] hover:text-green-600 transition-colors group"><ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Назад</button>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 mb-6 flex justify-between items-start shadow-sm relative overflow-hidden text-slate-900">
@@ -125,8 +131,8 @@ export function CarDetails({
         <div className="flex gap-10 items-center h-full self-center text-left mr-8"><div className="w-px bg-slate-100 h-16"></div><div><p className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest leading-none">Владелец</p><p className="text-xl font-bold text-black leading-none">{client.fullName}</p><p className="text-green-600 text-[12px] mt-2 font-bold">{client.phone}</p></div></div>
       </div>
 
-      <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden">
-        <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center">
+      <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl mb-12 relative overflow-hidden">
+        <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center relative z-50">
           <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">История обслуживания</h2>
           <div className="flex gap-2 text-left items-center">
             <div className="relative w-64 h-9"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} /><input type="text" placeholder="Поиск по истории..." className="w-full h-full pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-xs focus:border-green-500 transition-all outline-none font-bold shadow-sm font-sans" value={historySearch} onChange={e => setHistorySearch(e.target.value)} /></div>
@@ -190,33 +196,36 @@ export function CarDetails({
           </div>
         </div>
 
-        <div className="overflow-auto max-h-[calc(100vh-320px)] min-h-[350px]">
-          <table className="w-full text-left table-fixed min-w-[1200px] border-collapse" style={timesNewRoman}>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse" style={timesNewRoman}>
             <thead className="sticky top-0 z-20 bg-slate-50 border-b border-slate-200 shadow-sm text-slate-500 text-[11px] font-bold uppercase tracking-widest font-sans">
               <tr>
                 <th className="w-[140px] px-4 py-3 text-center">Статус</th>
-                <th className="w-[150px] px-3 py-3 font-bold">Артикул</th>
-                <th className="w-[130px] px-3 py-3 font-bold">Бренд</th>
-                <th className="px-3 py-3 font-bold">Описание</th>
-                <th className="w-[100px] px-3 py-3 text-center font-bold">Количество</th>
-                <th className="w-[150px] px-3 py-3 text-right font-bold">Итоговая сумма</th>
-                <th className="w-[120px] px-3 py-3 text-right font-bold">Закупка</th>
-                <th className="w-[180px] px-6 py-3 text-center font-bold">Примечание</th>
+                <th className="w-[150px] px-3 py-3">Артикул</th>
+                <th className="w-[130px] px-3 py-3">Бренд</th>
+                <th className="min-w-[300px] px-3 py-3">Описание</th>
+                <th className="w-[100px] px-3 py-3 text-center">Количество</th>
+                <th className="w-[150px] px-3 py-3 text-right">Итоговая сумма</th>
+                <th className="w-[120px] px-3 py-3 text-right">Закупка</th>
+                <th className="w-[180px] px-6 py-3 text-center">Примечание</th>
                 <th className="w-[80px] px-3 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-[14px]">
               {(isAdding || editingId) && (
-                <tr className="bg-white border-b-2 border-green-500 sticky top-[42px] z-[50] shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
-                  <td className="p-1.5 bg-white"><input type="date" style={timesNewRoman} className="w-full h-9 px-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none text-center" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.catalogNumber} onChange={e => setFormData({...formData, catalogNumber: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-center font-bold outline-none ${noArrowsClass}`} value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-green-600 bg-green-50/50 outline-none ${noArrowsClass}`} value={formData.unitPriceSale} onChange={e => setFormData({...formData, unitPriceSale: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-red-600 bg-red-50/50 outline-none ${noArrowsClass}`} value={formData.unitPricePurchase} onChange={e => setFormData({...formData, unitPricePurchase: e.target.value})}/></td>
-                  <td className="p-1.5 bg-white overflow-visible px-4 font-serif"><CustomSelect options={sortedNoteOptions} value={formData.note} onChange={(val: string) => setFormData({...formData, note: val})} /></td>
-                  <td className="p-1.5 bg-white flex gap-1 justify-center items-center h-[50px] font-sans"><button onClick={handleSave} className="bg-black text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-green-600">ОК</button><button onClick={() => {setIsAdding(false); setEditingId(null); setFormData({});}} className="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-600">X</button></td>
+                <tr className="bg-white border-b-2 border-green-500">
+                  <td className="p-1.5"><input type="date" style={timesNewRoman} className="w-full h-9 px-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none text-center" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.catalogNumber} onChange={e => setFormData({...formData, catalogNumber: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-center font-bold outline-none ${noArrowsClass}`} value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-green-600 bg-green-50/50 outline-none ${noArrowsClass}`} value={formData.unitPriceSale} onChange={e => setFormData({...formData, unitPriceSale: e.target.value})}/></td>
+                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-red-600 bg-red-50/50 outline-none ${noArrowsClass}`} value={formData.unitPricePurchase} onChange={e => setFormData({...formData, unitPricePurchase: e.target.value})}/></td>
+                  <td className="p-1.5 overflow-visible px-4 font-serif"><CustomSelect options={sortedNoteOptions} value={formData.note} onChange={(val: string) => setFormData({...formData, note: val})} /></td>
+                  <td className="p-1.5 flex gap-1 justify-center items-center h-[50px] font-sans">
+                    <button onClick={handleSave} className="bg-black text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-green-600">ОК</button>
+                    <button onClick={() => {setIsAdding(false); setEditingId(null); setFormData({});}} className="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-600">X</button>
+                  </td>
                 </tr>
               )}
               {filteredGroupedRecords.map((g: any) => {
@@ -249,7 +258,6 @@ export function CarDetails({
                               {isPrepaymentOpen && (
                                 <div className="flex items-center gap-2 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 animate-in slide-in-from-left-2 duration-200 shadow-sm font-sans">
                                   <span className="text-[9px] text-blue-400 font-black uppercase">Предоплата:</span>
-                                  {/* УБРАЛИ autoFocus чтобы поле не выделялось при входе на страницу */}
                                   <input type="number" style={timesNewRoman} className={`w-16 bg-transparent text-blue-600 font-bold outline-none text-center border-b border-blue-200 text-[13px] ${noArrowsClass}`} value={g.records[0]?.prepayment || ''} onChange={(e) => handleGroupPrepayment(g.records, e.target.value)} />
                                   <span className="text-blue-600 font-bold text-[13px]">₽</span>
                                 </div>
@@ -270,7 +278,15 @@ export function CarDetails({
                         <td className="px-3 py-1.5 text-right font-bold whitespace-nowrap"><div>{r.totalPrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-400 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPriceSale || 0).toLocaleString()} / шт</span></div></td>
                         <td className="px-3 py-1.5 text-right font-bold text-slate-400 whitespace-nowrap"><div>{r.purchasePrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-300 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPricePurchase || 0).toLocaleString()} / шт</span></div></td>
                         <td className="px-6 py-1.5 text-center">{r.note}</td>
-                        <td className="px-3 py-1.5 text-right"><div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all font-sans"><button onClick={() => { setEditingId(r.id); setFormData({...r, unitPriceSale: r.unitPriceSale || (r.totalPrice/r.quantity), unitPricePurchase: r.unitPricePurchase || (r.purchasePrice/r.quantity)}); setIsAdding(true); }} className="p-1.5 text-slate-300 hover:text-green-600 hover:bg-white rounded-lg shadow-sm transition-all"><Edit2 size={14} /></button><button onClick={() => handleDeleteClick(r.id)} className={`p-1.5 rounded-lg shadow-sm transition-all ${pendingDeleteId === r.id ? 'bg-red-600 text-white animate-pulse' : 'text-slate-300 hover:text-red-600 hover:bg-white'}`}><Trash2 size={14} /></button></div></td>
+                        <td className="px-3 py-1.5 text-right"><div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all font-sans">
+                          <button onClick={() => { 
+                            setEditingId(r.id); 
+                            setFormData({...r, unitPriceSale: r.unitPriceSale || (r.totalPrice/r.quantity), unitPricePurchase: r.unitPricePurchase || (r.purchasePrice/r.quantity)}); 
+                            setIsAdding(true); 
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }} className="p-1.5 text-slate-300 hover:text-green-600 hover:bg-white rounded-lg shadow-sm transition-all"><Edit2 size={14} /></button>
+                          <button onClick={() => handleDeleteClick(r.id)} className={`p-1.5 rounded-lg shadow-sm transition-all ${pendingDeleteId === r.id ? 'bg-red-600 text-white animate-pulse' : 'text-slate-300 hover:text-red-600 hover:bg-white'}`}><Trash2 size={14} /></button>
+                        </div></td>
                       </tr>
                     ))}
                     <tr className="bg-slate-50/40 text-right border-b border-slate-200/50 uppercase">

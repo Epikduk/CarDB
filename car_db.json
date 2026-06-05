@@ -4,13 +4,13 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "!Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1780644302600
+      "lastActivity": 1780653157021
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
       "fullName": "Виталик Джанго",
       "phone": "+79289115507",
-      "lastActivity": 1778945497108
+      "lastActivity": 1780653911716
     },
     {
       "id": "fa4bd634-f121-4199-9900-659b520af900",
@@ -22,7 +22,7 @@
       "id": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
       "fullName": "Степан Ершов",
       "phone": "+79187461135",
-      "lastActivity": 1780333411537
+      "lastActivity": 1780655480927
     },
     {
       "id": "1e14b14c-b81a-47a7-9549-6d3eb8043572",
@@ -33,13 +33,14 @@
     {
       "id": "5ccebf55-a26f-47aa-866c-2bc1cd69d301",
       "fullName": "Георгий",
-      "phone": "+79384477777"
+      "phone": "+79384477777",
+      "lastActivity": 1780653795025
     },
     {
       "id": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
       "fullName": "Месроп Мовсисян",
       "phone": "+79675399393",
-      "lastActivity": 1778412940789
+      "lastActivity": 1780654243118
     },
     {
       "id": "8bde670e-fdd4-4344-9d71-b6e5add26eb7",
@@ -51,13 +52,13 @@
       "id": "eab69a9a-26f5-40e4-8337-0e533e989777",
       "fullName": "Богдан Шибаков",
       "phone": "",
-      "lastActivity": 1780333350957
+      "lastActivity": 1780653162398
     },
     {
       "id": "bf34649c-23e1-48b5-8491-60f94ec79adb",
       "fullName": "Владимир Кривошеев",
       "phone": "",
-      "lastActivity": 1780000267245
+      "lastActivity": 1780655210966
     },
     {
       "id": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
@@ -75,37 +76,37 @@
       "id": "8facc369-7df8-4140-851c-5208dd4a7714",
       "fullName": "Хасет Фицев",
       "phone": "+79287201495",
-      "lastActivity": 1780333419080
+      "lastActivity": 1780655405370
     },
     {
       "id": "47df265c-7f04-47b3-b544-1976f74f3ced",
       "fullName": "Никита Окрушко",
       "phone": "",
-      "lastActivity": 1780489754108
+      "lastActivity": 1780656347747
     },
     {
       "id": "25c9fb31-4215-4a67-ab7a-6358f941371f",
       "fullName": "Юрий Васильевич Ивашов",
       "phone": "+79280137777",
-      "lastActivity": 1780561161661
+      "lastActivity": 1780655482615
     },
     {
       "id": "bbb876ea-d9af-4936-b416-557604787913",
       "fullName": "Олег кашкай",
       "phone": "+79283766437",
-      "lastActivity": 1780570201133
+      "lastActivity": 1780656388157
     },
     {
       "id": "4d32facb-b504-4c96-baef-b6fe9e28b955",
       "fullName": "Стас Гробовщик",
       "phone": "+79887577775",
-      "lastActivity": 1780489785869
+      "lastActivity": 1780656001329
     },
     {
       "id": "f61ad6c8-9b26-4c2a-aa6d-d68baf331480",
       "fullName": "С южного",
       "phone": "",
-      "lastActivity": 1780333288886
+      "lastActivity": 1780653553992
     }
   ],
   "cars": [
@@ -1565,7 +1566,7 @@
       "clientId": "47df265c-7f04-47b3-b544-1976f74f3ced",
       "records": [
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "LF2232",
           "brand": "Zekkert",
           "description": "Фильтр воздушный",
@@ -1573,14 +1574,14 @@
           "unitPriceSale": "418",
           "unitPricePurchase": "418",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 418,
           "purchasePrice": 418,
           "prepayment": 0,
           "id": "33dcfdf4-c271-4761-89c9-f4a260ae0e12"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "W7058",
           "brand": "MANN-FILTER",
           "description": "Масляный фильтр",
@@ -1588,14 +1589,14 @@
           "unitPriceSale": "517",
           "unitPricePurchase": "517",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 517,
           "purchasePrice": 517,
           "prepayment": 0,
           "id": "1e503522-81be-494c-9dfe-7e37c0cdec66"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "IF3072",
           "brand": "Zekkert",
           "description": "Фильтр салонный",
@@ -1603,14 +1604,14 @@
           "unitPriceSale": "309",
           "unitPricePurchase": "309",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 309,
           "purchasePrice": 309,
           "prepayment": 0,
           "id": "c4060533-dba7-4736-a2f9-3e8d2a5ac3dd"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "1009305XEC06",
           "brand": "HAVAL",
           "description": "Прокладка сливной пробки картера двигателя",
@@ -1618,14 +1619,14 @@
           "unitPriceSale": "65",
           "unitPricePurchase": "65",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 65,
           "purchasePrice": 65,
           "prepayment": 0,
           "id": "c4931e62-ca63-415a-b35e-66f3c757ae23"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "550046573 550046572 151100008 151100002",
           "brand": "Shell Haval",
           "description": "Масло в коробку + фильтр + корпус",
@@ -1633,14 +1634,14 @@
           "unitPriceSale": "12000",
           "unitPricePurchase": "9078",
           "note": "Авито",
-          "status": 3,
+          "status": 0,
           "totalPrice": 12000,
           "purchasePrice": 9078,
           "prepayment": 0,
           "id": "3ec01442-1821-489b-a13f-d8214cf8cd26"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "CS010102",
           "brand": "Coolstream",
           "description": "Антифриз",
@@ -1648,14 +1649,14 @@
           "unitPriceSale": "2155",
           "unitPricePurchase": "2155",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 4310,
           "purchasePrice": 4310,
           "prepayment": 0,
           "id": "636188df-2b58-44fa-a3fa-1c28a9f3c06e"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "101172",
           "brand": "FEBI",
           "description": "Масло в муфту",
@@ -1663,14 +1664,14 @@
           "unitPriceSale": "3000",
           "unitPricePurchase": "2907",
           "note": "Мир запчастей",
-          "status": 3,
+          "status": 0,
           "totalPrice": 3000,
           "purchasePrice": 2907,
           "prepayment": 0,
           "id": "37aa5ab4-5eda-496b-a361-2cd87a83f974"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "",
           "brand": "",
           "description": "Масло моторное",
@@ -1678,14 +1679,14 @@
           "unitPriceSale": "",
           "unitPricePurchase": "",
           "note": "Автолавка",
-          "status": 3,
+          "status": 0,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
           "id": "1ab615fe-c10e-4fd4-ae2f-467115d5f1d5"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "MA1417LR",
           "brand": "LYNX",
           "description": "Опора амортизатора переднего",
@@ -1693,14 +1694,14 @@
           "unitPriceSale": "4650",
           "unitPricePurchase": "3590",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 9300,
           "purchasePrice": 7180,
           "prepayment": 0,
           "id": "7fd9bab7-7591-4a2e-a0e9-029ffd294855"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "BR.SC.1.94",
           "brand": "BRAVE",
           "description": "Пружина передняя",
@@ -1708,14 +1709,14 @@
           "unitPriceSale": "2050",
           "unitPricePurchase": "1597",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 4100,
           "purchasePrice": 3194,
           "prepayment": 0,
           "id": "b001eb8d-f1b8-4613-aa13-af422bf120cc"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "CL0249",
           "brand": "CTR",
           "description": "Стойки стабилизатора",
@@ -1723,14 +1724,14 @@
           "unitPriceSale": "1350",
           "unitPricePurchase": "1184",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 2700,
           "purchasePrice": 2368,
           "prepayment": 0,
           "id": "e854aec3-0db4-4d8e-9829-1e19cac342cb"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "RN2328",
           "brand": "NIBK",
           "description": "Диски тормозные передние",
@@ -1738,14 +1739,14 @@
           "unitPriceSale": "6230",
           "unitPricePurchase": "5357",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 12460,
           "purchasePrice": 10714,
           "prepayment": 0,
           "id": "ef9c9075-d398-4699-ad06-8a0a04b7b82c"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "SP4119",
           "brand": "SANGSIN BRAKE",
           "description": "Колодки тормозные передние",
@@ -1753,14 +1754,14 @@
           "unitPriceSale": "2180",
           "unitPricePurchase": "1745",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 2180,
           "purchasePrice": 1745,
           "prepayment": 0,
           "id": "b26f3126-a413-4556-a283-8260768329be"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "SP2933",
           "brand": "SANGSIN BRAKE",
           "description": "Колодки тормозные задние",
@@ -1768,14 +1769,14 @@
           "unitPriceSale": "1670",
           "unitPricePurchase": "1278",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 1670,
           "purchasePrice": 1278,
           "prepayment": 0,
           "id": "cf7926b1-e301-4256-87fa-43f21d783d02"
         },
         {
-          "date": "2026-05-18",
+          "date": "2026-06-05",
           "catalogNumber": "MA5011LR",
           "brand": "LYNX",
           "description": "Подшипник опоры переднего амортизатора",
@@ -1783,7 +1784,7 @@
           "unitPriceSale": "1210",
           "unitPricePurchase": "904",
           "note": "Мир запчастей",
-          "status": 2,
+          "status": 0,
           "totalPrice": 2420,
           "purchasePrice": 1808,
           "prepayment": 0,
