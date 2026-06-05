@@ -1,18 +1,26 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, Calendar, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Calendar, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle, CalendarDays, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CustomSelect } from '../components/CustomSelect';
 
-export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, onBack }: any) {
+export function CarDetails({ 
+  carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, onBack,
+  openPrepaymentIds, setOpenPrepaymentIds 
+}: any) {
   const car = cars.find((c: any) => c.id === carId);
   const client = clients.find((c: any) => c.id === car?.clientId);
+  
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [historySearch, setHistorySearch] = useState('');
   const [formData, setFormData] = useState<any>({});
-  const [openPrepaymentId, setOpenPrepaymentId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  // Состояния для массового изменения даты
+  const [isBulkDateModalOpen, setIsBulkDateModalOpen] = useState(false);
+  const [bulkDateFrom, setBulkDateFrom] = useState('');
+  const [bulkDateTo, setBulkDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));
 
   const sortedNoteOptions = useMemo(() => [...noteOptions].sort((a, b) => a.localeCompare(b)), [noteOptions]);
 
@@ -35,7 +43,6 @@ export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updat
     return Object.keys(groups).sort((a,b) => b.localeCompare(a)).map(date => {
       const dayRecords = groups[date];
       
-      // Итого и Закупка считаются по всем, КРОМЕ отмененных (status 3)
       const activeRecords = dayRecords.filter((r: any) => r.status !== 3);
       const totalSale = activeRecords.reduce((s: number, r: any) => s + (r.totalPrice || 0), 0);
       const totalPurchase = activeRecords.reduce((s: number, r: any) => s + (r.purchasePrice || 0), 0);
@@ -54,6 +61,24 @@ export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updat
     setIsAdding(false); setEditingId(null); setFormData({});
   };
 
+  const handleBulkDateUpdate = () => {
+    if (!bulkDateFrom || !bulkDateTo) return;
+    
+    const recordsToUpdate = car.records.filter((r: any) => {
+      const formattedRecDate = format(new Date(r.date), 'dd.MM.yyyy');
+      return formattedRecDate === bulkDateFrom;
+    });
+    
+    if (recordsToUpdate.length === 0) return;
+
+    recordsToUpdate.forEach((r: any) => {
+      updateRecord(car.id, r.id, { ...r, date: bulkDateTo });
+    });
+    
+    setIsBulkDateModalOpen(false);
+    setBulkDateFrom('');
+  };
+
   const handleAddAtDate = (date: string) => {
     setFormData({ date, catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: sortedNoteOptions[0] || '', status: 0 });
     setIsAdding(true); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -68,10 +93,21 @@ export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updat
   const handleGroupPrepayment = (records: any[], amount: string) => { if (records.length > 0) updateRecord(car.id, records[0].id, { ...records[0], prepayment: Number(amount) || 0 }); };
   const handleDeleteClick = (recordId: string) => { if (pendingDeleteId === recordId) { deleteRecord(car.id, recordId); setPendingDeleteId(null); } else { setPendingDeleteId(recordId); setTimeout(() => setPendingDeleteId(null), 3000); } };
 
+  const togglePrepayment = (recordId: string) => {
+    const newSet = new Set(openPrepaymentIds);
+    if (newSet.has(recordId)) newSet.delete(recordId);
+    else newSet.add(recordId);
+    setOpenPrepaymentIds(newSet);
+  };
+
   if (!car || !client) return null;
 
   const timesNewRoman = { fontFamily: '"Times New Roman", Times, serif' };
   const noArrowsClass = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+
+  const availableDatesFormatted = Array.from(new Set(car.records.map((r: any) => 
+    format(new Date(r.date), 'dd.MM.yyyy')
+  ))).sort((a, b) => b.localeCompare(a));
 
   return (
     <div className="p-4 max-w-7xl mx-auto animate-in fade-in duration-500 text-left">
@@ -92,8 +128,64 @@ export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updat
       <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden">
         <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center">
           <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">История обслуживания</h2>
-          <div className="flex gap-2 text-left">
+          <div className="flex gap-2 text-left items-center">
             <div className="relative w-64 h-9"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} /><input type="text" placeholder="Поиск по истории..." className="w-full h-full pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-xs focus:border-green-500 transition-all outline-none font-bold shadow-sm font-sans" value={historySearch} onChange={e => setHistorySearch(e.target.value)} /></div>
+            
+            <div className="relative">
+              <button 
+                onClick={() => setIsBulkDateModalOpen(!isBulkDateModalOpen)}
+                className={`btn-action !h-9 !px-4 !bg-white border border-slate-200 !text-slate-500 hover:!border-green-500 hover:!text-green-600 shadow-none font-sans ${isBulkDateModalOpen ? '!border-green-500 !text-green-600' : ''}`}
+                title="Перенести все записи на другую дату"
+              >
+                <CalendarDays size={16} />
+              </button>
+
+              {isBulkDateModalOpen && (
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-[100] p-5 animate-in zoom-in-95 duration-200">
+                  <div className="space-y-4">
+                    <h4 className="text-[11px] font-black uppercase text-slate-900 tracking-[0.15em] mb-4 italic">Перенос даты заказа</h4>
+                    
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block ml-1 tracking-tighter">С какой даты:</label>
+                      <CustomSelect 
+                        options={availableDatesFormatted} 
+                        value={bulkDateFrom} 
+                        onChange={setBulkDateFrom} 
+                        placeholder="Выберите дату"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block ml-1 tracking-tighter">На какую дату:</label>
+                      <div className="relative group/picker">
+                        <input 
+                          type="date" 
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                          value={bulkDateTo}
+                          onChange={(e) => setBulkDateTo(e.target.value)}
+                          onClick={(e) => (e.currentTarget as any).showPicker()}
+                        />
+                        <div className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-[11px] font-bold text-slate-800 shadow-sm group-hover/picker:border-green-500 transition-all">
+                          <span className="truncate">
+                            {bulkDateTo ? format(new Date(bulkDateTo), 'dd.MM.yyyy') : 'Выберите дату'}
+                          </span>
+                          <ChevronDown size={14} className="text-slate-400" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handleBulkDateUpdate}
+                      disabled={!bulkDateFrom || !bulkDateTo}
+                      className="w-full bg-slate-950 text-white py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-green-600 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-lg active:scale-95"
+                    >
+                      Обновить записи
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {!isAdding ? <button onClick={() => { setFormData({}); setIsAdding(true); }} className="btn-action !h-9 font-sans"><Plus size={16} /> Добавить</button> : <button onClick={() => { setIsAdding(false); setEditingId(null); setFormData({}); }} className="bg-red-600 text-white font-bold px-6 h-9 rounded-xl text-[10px] uppercase transition-all shadow-md font-sans"><CloseIcon size={16} className="inline mr-1" /> Отменить</button>}
           </div>
         </div>
@@ -127,33 +219,70 @@ export function CarDetails({ carId, clients, cars, noteOptions, addRecord, updat
                   <td className="p-1.5 bg-white flex gap-1 justify-center items-center h-[50px] font-sans"><button onClick={handleSave} className="bg-black text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-green-600">ОК</button><button onClick={() => {setIsAdding(false); setEditingId(null); setFormData({});}} className="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-600">X</button></td>
                 </tr>
               )}
-              {filteredGroupedRecords.map((g: any) => (
-                <React.Fragment key={g.date}>
-                  <tr className="bg-slate-50/80 border-y border-slate-100 text-slate-400 text-[13px] font-bold font-sans">
-                    <td colSpan={9} className="px-4 py-2"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="flex items-center gap-2 tracking-widest whitespace-nowrap mr-2 leading-none font-sans text-slate-400"><Calendar size={14} className="text-green-600" />{format(new Date(g.date), 'dd.MM.yyyy')}</div><div className="flex items-center gap-1.5 bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm font-sans"><button onClick={() => handleGroupStatus(g.records, 0)} title="Сброс" className="p-1 text-slate-300 hover:bg-slate-100 rounded transition-all"><RotateCcw size={14}/></button><button onClick={() => handleGroupStatus(g.records, 1)} title="Заказано" className="p-1 text-yellow-500 hover:bg-yellow-50 rounded transition-all"><ShoppingCart size={14}/></button><button onClick={() => handleGroupStatus(g.records, 2)} title="Выполнено" className="p-1 text-green-600 hover:bg-green-50 rounded transition-all"><CheckCircle2 size={14}/></button><button onClick={() => handleGroupStatus(g.records, 3)} title="Отменено" className="p-1 text-red-500 hover:bg-red-50 rounded transition-all"><XCircle size={14}/></button></div><div className="flex items-center gap-2 ml-2 font-sans"><button onClick={() => setOpenPrepaymentId(openPrepaymentId === g.records[0]?.id ? null : g.records[0]?.id)} className={`p-1.5 rounded-lg transition-all ${g.records[0]?.prepayment > 0 ? 'bg-blue-500 text-white shadow-md' : openPrepaymentId === g.records[0]?.id ? 'bg-blue-100 text-blue-600' : 'bg-white border border-slate-200 text-slate-300 hover:text-blue-500 shadow-sm'}`}><Wallet size={14} /></button>{openPrepaymentId === g.records[0]?.id && (<div className="flex items-center gap-2 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 animate-in slide-in-from-left-2 duration-200 shadow-sm font-sans"><span className="text-[9px] text-blue-400 font-black uppercase">Предоплата:</span><input type="number" style={timesNewRoman} className={`w-16 bg-transparent text-blue-600 font-bold outline-none text-center border-b border-blue-200 text-[13px] ${noArrowsClass}`} value={g.records[0]?.prepayment || ''} onChange={(e) => handleGroupPrepayment(g.records, e.target.value)} autoFocus /><span className="text-blue-600 font-bold text-[13px]">₽</span></div>)}</div></div><button onClick={() => handleAddAtDate(g.date)} className="btn-action !h-8 !py-0 !px-4 !rounded-xl font-sans"><Plus size={14} /> Добавить</button></div></td>
-                  </tr>
-                  {g.records.map((r: any) => (
-                    <tr key={r.id} className={`transition-colors group border-b border-slate-50 last:border-0 ${r.status === 1 ? 'bg-yellow-50' : r.status === 2 ? 'bg-green-100' : r.status === 3 ? 'bg-red-50 text-slate-400' : 'bg-white hover:bg-green-50/50'}`}>
-                      <td className="px-4 py-2"><div className="flex gap-1 justify-center font-sans"><button onClick={() => updateStatus(r.id, 0)} className={`p-1.5 rounded-lg transition-all ${r.status > 0 ? 'bg-slate-50 text-slate-300 hover:bg-slate-200 hover:text-slate-600' : 'opacity-0 pointer-events-none'}`}><RotateCcw size={14} /></button><button onClick={() => updateStatus(r.id, 1)} className={`p-1.5 rounded-lg transition-all ${r.status === 1 ? 'bg-yellow-400 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-yellow-200 hover:text-yellow-700'}`}><ShoppingCart size={14} /></button><button onClick={() => updateStatus(r.id, 2)} className={`p-1.5 rounded-lg transition-all ${r.status === 2 ? 'bg-green-500 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-green-200 hover:text-green-700'}`}><CheckCircle2 size={14} /></button><button onClick={() => updateStatus(r.id, 3)} className={`p-1.5 rounded-lg transition-all ${r.status === 3 ? 'bg-red-500 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-red-100 hover:text-red-700'}`}><XCircle size={14} /></button></div></td>
-                      <td className="px-3 py-1.5 text-slate-500 group-hover:text-black">{r.catalogNumber || '—'}</td>
-                      <td className={`px-3 py-1.5 font-bold ${r.status === 3 ? '' : 'text-slate-800'}`}>{r.brand || '—'}</td>
-                      <td className="px-3 py-1.5 font-medium">{r.description}</td>
-                      <td className="px-3 py-1.5 text-center font-bold">{r.quantity}</td>
-                      <td className="px-3 py-1.5 text-right font-bold whitespace-nowrap"><div>{r.totalPrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-400 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPriceSale || 0).toLocaleString()} / шт</span></div></td>
-                      <td className="px-3 py-1.5 text-right font-bold text-slate-400 whitespace-nowrap"><div>{r.purchasePrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-300 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPricePurchase || 0).toLocaleString()} / шт</span></div></td>
-                      <td className="px-6 py-1.5 text-center">{r.note}</td>
-                      <td className="px-3 py-1.5 text-right"><div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all font-sans"><button onClick={() => { setEditingId(r.id); setFormData({...r, unitPriceSale: r.unitPriceSale || (r.totalPrice/r.quantity), unitPricePurchase: r.unitPricePurchase || (r.purchasePrice/r.quantity)}); setIsAdding(true); }} className="p-1.5 text-slate-300 hover:text-green-600 hover:bg-white rounded-lg shadow-sm transition-all"><Edit2 size={14} /></button><button onClick={() => handleDeleteClick(r.id)} className={`p-1.5 rounded-lg shadow-sm transition-all ${pendingDeleteId === r.id ? 'bg-red-600 text-white animate-pulse' : 'text-slate-300 hover:text-red-600 hover:bg-white'}`}><Trash2 size={14} /></button></div></td>
+              {filteredGroupedRecords.map((g: any) => {
+                const recordIdForPrepayment = g.records[0]?.id;
+                const isPrepaymentOpen = openPrepaymentIds.has(recordIdForPrepayment);
+
+                return (
+                  <React.Fragment key={g.date}>
+                    <tr className="bg-slate-50/80 border-y border-slate-100 text-slate-400 text-[13px] font-bold font-sans">
+                      <td colSpan={9} className="px-4 py-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 tracking-widest whitespace-nowrap mr-2 leading-none font-sans text-slate-400">
+                              <Calendar size={14} className="text-green-600" />
+                              {format(new Date(g.date), 'dd.MM.yyyy')}
+                            </div>
+                            <div className="flex items-center gap-1.5 bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm font-sans">
+                              <button onClick={() => handleGroupStatus(g.records, 0)} title="Сброс" className="p-1 text-slate-300 hover:bg-slate-100 rounded transition-all"><RotateCcw size={14}/></button>
+                              <button onClick={() => handleGroupStatus(g.records, 1)} title="Заказано" className="p-1 text-yellow-500 hover:bg-yellow-50 rounded transition-all"><ShoppingCart size={14}/></button>
+                              <button onClick={() => handleGroupStatus(g.records, 2)} title="Выполнено" className="p-1 text-green-600 hover:bg-green-50 rounded transition-all"><CheckCircle2 size={14}/></button>
+                              <button onClick={() => handleGroupStatus(g.records, 3)} title="Отменено" className="p-1 text-red-500 hover:bg-red-50 rounded transition-all"><XCircle size={14}/></button>
+                            </div>
+                            <div className="flex items-center gap-2 ml-2 font-sans">
+                              <button 
+                                onClick={() => togglePrepayment(recordIdForPrepayment)} 
+                                className={`p-1.5 rounded-lg transition-all ${g.records[0]?.prepayment > 0 ? 'bg-blue-500 text-white shadow-md' : isPrepaymentOpen ? 'bg-blue-100 text-blue-600' : 'bg-white border border-slate-200 text-slate-300 hover:text-blue-500 shadow-sm'}`}
+                              >
+                                <Wallet size={14} />
+                              </button>
+                              {isPrepaymentOpen && (
+                                <div className="flex items-center gap-2 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 animate-in slide-in-from-left-2 duration-200 shadow-sm font-sans">
+                                  <span className="text-[9px] text-blue-400 font-black uppercase">Предоплата:</span>
+                                  {/* УБРАЛИ autoFocus чтобы поле не выделялось при входе на страницу */}
+                                  <input type="number" style={timesNewRoman} className={`w-16 bg-transparent text-blue-600 font-bold outline-none text-center border-b border-blue-200 text-[13px] ${noArrowsClass}`} value={g.records[0]?.prepayment || ''} onChange={(e) => handleGroupPrepayment(g.records, e.target.value)} />
+                                  <span className="text-blue-600 font-bold text-[13px]">₽</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <button onClick={() => handleAddAtDate(g.date)} className="btn-action !h-8 !py-0 !px-4 !rounded-xl font-sans"><Plus size={14} /> Добавить</button>
+                        </div>
+                      </td>
                     </tr>
-                  ))}
-                  <tr className="bg-slate-50/40 text-right border-b border-slate-200/50 uppercase">
-                    <td colSpan={5} className="px-6 py-3 text-slate-400 text-[12px] font-sans font-bold tracking-tight">Итого:</td>
-                    <td className="px-3 py-3 text-black text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.sale.toLocaleString()} ₽</td>
-                    <td className="px-3 py-3 text-slate-500 text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.purchase.toLocaleString()} ₽</td>
-                    <td className="px-6 py-3 text-center whitespace-nowrap leading-none"><div className="flex flex-col gap-1 items-center font-sans"><span className="text-slate-400 text-[12px] font-bold tracking-tight uppercase leading-none">Прибыль:</span>{g.greenProfit !== 0 && <span className="text-green-600 text-[17px] font-bold leading-none">{g.greenProfit.toLocaleString()} ₽</span>}{g.yellowProfit !== 0 && <span className="text-yellow-600 text-[17px] font-bold leading-none">{g.yellowProfit.toLocaleString()} ₽</span>}{g.yellowProfit === 0 && g.greenProfit === 0 && <span className="text-slate-400 text-[16px] leading-none">0 ₽</span>}</div></td>
-                    <td></td>
-                  </tr>
-                </React.Fragment>
-              ))}
+                    {g.records.map((r: any) => (
+                      <tr key={r.id} className={`transition-colors group border-b border-slate-50 last:border-0 ${r.status === 1 ? 'bg-yellow-50' : r.status === 2 ? 'bg-green-100' : r.status === 3 ? 'bg-red-50 text-slate-400' : 'bg-white hover:bg-green-50/50'}`}>
+                        <td className="px-4 py-2"><div className="flex gap-1 justify-center font-sans"><button onClick={() => updateStatus(r.id, 0)} className={`p-1.5 rounded-lg transition-all ${r.status > 0 ? 'bg-slate-50 text-slate-300 hover:bg-slate-200 hover:text-slate-600' : 'opacity-0 pointer-events-none'}`}><RotateCcw size={14} /></button><button onClick={() => updateStatus(r.id, 1)} className={`p-1.5 rounded-lg transition-all ${r.status === 1 ? 'bg-yellow-400 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-yellow-200 hover:text-yellow-700'}`}><ShoppingCart size={14} /></button><button onClick={() => updateStatus(r.id, 2)} className={`p-1.5 rounded-lg transition-all ${r.status === 2 ? 'bg-green-500 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-green-200 hover:text-green-700'}`}><CheckCircle2 size={14}/></button><button onClick={() => updateStatus(r.id, 3)} className={`p-1.5 rounded-lg transition-all ${r.status === 3 ? 'bg-red-500 text-white shadow-md' : 'bg-slate-50 text-slate-300 hover:bg-red-100 hover:text-red-700'}`}><XCircle size={14} /></button></div></td>
+                        <td className="px-3 py-1.5 text-slate-500 group-hover:text-black">{r.catalogNumber || '—'}</td>
+                        <td className={`px-3 py-1.5 font-bold ${r.status === 3 ? '' : 'text-slate-800'}`}>{r.brand || '—'}</td>
+                        <td className="px-3 py-1.5 font-medium">{r.description}</td>
+                        <td className="px-3 py-1.5 text-center font-bold">{r.quantity}</td>
+                        <td className="px-3 py-1.5 text-right font-bold whitespace-nowrap"><div>{r.totalPrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-400 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPriceSale || 0).toLocaleString()} / шт</span></div></td>
+                        <td className="px-3 py-1.5 text-right font-bold text-slate-400 whitespace-nowrap"><div>{r.purchasePrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-300 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPricePurchase || 0).toLocaleString()} / шт</span></div></td>
+                        <td className="px-6 py-1.5 text-center">{r.note}</td>
+                        <td className="px-3 py-1.5 text-right"><div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all font-sans"><button onClick={() => { setEditingId(r.id); setFormData({...r, unitPriceSale: r.unitPriceSale || (r.totalPrice/r.quantity), unitPricePurchase: r.unitPricePurchase || (r.purchasePrice/r.quantity)}); setIsAdding(true); }} className="p-1.5 text-slate-300 hover:text-green-600 hover:bg-white rounded-lg shadow-sm transition-all"><Edit2 size={14} /></button><button onClick={() => handleDeleteClick(r.id)} className={`p-1.5 rounded-lg shadow-sm transition-all ${pendingDeleteId === r.id ? 'bg-red-600 text-white animate-pulse' : 'text-slate-300 hover:text-red-600 hover:bg-white'}`}><Trash2 size={14} /></button></div></td>
+                      </tr>
+                    ))}
+                    <tr className="bg-slate-50/40 text-right border-b border-slate-200/50 uppercase">
+                      <td colSpan={5} className="px-6 py-3 text-slate-400 text-[12px] font-sans font-bold tracking-tight">Итого:</td>
+                      <td className="px-3 py-3 text-black text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.sale.toLocaleString()} ₽</td>
+                      <td className="px-3 py-3 text-slate-500 text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.purchase.toLocaleString()} ₽</td>
+                      <td className="px-6 py-3 text-center whitespace-nowrap leading-none"><div className="flex flex-col gap-1 items-center font-sans"><span className="text-slate-400 text-[12px] font-bold tracking-tight uppercase leading-none">Прибыль:</span>{g.greenProfit !== 0 && <span className="text-green-600 text-[17px] font-bold leading-none">{g.greenProfit.toLocaleString()} ₽</span>}{g.yellowProfit !== 0 && <span className="text-yellow-600 text-[17px] font-bold leading-none">{g.yellowProfit.toLocaleString()} ₽</span>}{g.yellowProfit === 0 && g.greenProfit === 0 && <span className="text-slate-400 text-[16px] leading-none">0 ₽</span>}</div></td>
+                      <td></td>
+                    </tr>
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useLayoutEffect } from 'react';
-import { Search, UserPlus, Car as CarIcon, Phone, Plus, Trash2, Edit2, ChevronDown, SortAsc, CarFront, History, Filter } from 'lucide-react';
+import { Search, UserPlus, Car as CarIcon, Phone, Plus, Trash2, Edit2, ChevronDown, SortAsc, CarFront, History } from 'lucide-react';
 import { AddClientModal } from '../components/AddClientModal';
 import { AddCarModal } from '../components/AddCarModal';
 import { ConfirmModal } from '../components/ConfirmModal';
@@ -63,11 +63,34 @@ export function ClientList({
     });
   }, [clients, cars, searchTerm, sortBy, statusFilter]);
 
+  // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ РАСКРЫТИЯ С АВТОСКРОЛЛОМ ---
   const toggleExpand = (clientId: string) => {
+    const isExpanding = !expandedClientIds.has(clientId);
     const newSet = new Set(expandedClientIds);
-    if (newSet.has(clientId)) newSet.delete(clientId);
-    else newSet.add(clientId);
+    
+    if (newSet.has(clientId)) {
+      newSet.delete(clientId);
+    } else {
+      newSet.add(clientId);
+    }
     setExpandedClientIds(newSet);
+
+    // Если открываем карточку — скроллим к ней
+    if (isExpanding) {
+      setTimeout(() => {
+        const element = document.getElementById(`client-card-${clientId}`);
+        if (element) {
+          const navHeight = 80; // Высота шапки с запасом
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - navHeight;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 150); // Небольшая задержка, чтобы React успел отрисовать вложенный список
+    }
   };
 
   const handleCarClick = (carId: string) => {
@@ -87,7 +110,6 @@ export function ClientList({
         <h1 className="text-3xl font-black text-black uppercase italic tracking-tight leading-none mt-4">База клиентов</h1>
         
         <div className="flex items-center gap-4">
-          {/* ЕДИНЫЙ БЛОК УПРАВЛЕНИЯ */}
           <div className="flex flex-col bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-sm min-w-[400px]">
             <div className="flex gap-1">
               <button onClick={() => setSortBy('name')} className={controlBtnStyle(sortBy === 'name', 'text-black')}><SortAsc size={14} /> А-Я</button>
@@ -104,7 +126,6 @@ export function ClientList({
             </div>
           </div>
 
-          {/* Исправленная кнопка "Новый клиент" (не растягивается) */}
           <button 
             onClick={() => setModal({ type: 'addClient' })} 
             className="btn-action !py-3 !px-6 self-center ml-2"
@@ -125,7 +146,11 @@ export function ClientList({
           const displayCars = statusFilter === 'all' && !searchTerm ? clientCars : filteredCars;
           
           return (
-            <div key={client.id} className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden hover:border-green-500/20 transition-all">
+            <div 
+              key={client.id} 
+              id={`client-card-${client.id}`}
+              className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden hover:border-green-500/20 transition-all"
+            >
               <div onClick={() => toggleExpand(client.id)} className={`p-4 bg-slate-50/50 flex justify-between items-center cursor-pointer group/card relative z-10 transition-all border-b ${isExpanded ? 'border-slate-200' : 'border-transparent'}`}>
                 <div className="flex items-center gap-4 text-left">
                   <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}><ChevronDown size={20} className="text-slate-300 group-hover/card:text-green-600" /></div>

@@ -4,43 +4,43 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1777897923862
+      "lastActivity": 1780652358610
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
       "fullName": "Виталик Джанго",
       "phone": "+79289115507",
-      "lastActivity": 1777891086704
+      "lastActivity": 1780652117815
     },
     {
       "id": "fa4bd634-f121-4199-9900-659b520af900",
       "fullName": "Артем Бабад",
       "phone": "",
-      "lastActivity": 1777891444502
+      "lastActivity": 1780648303145
     },
     {
       "id": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
       "fullName": "Степан Ершов",
       "phone": "+79187461135",
-      "lastActivity": 1777892202261
+      "lastActivity": 1780652259970
     },
     {
       "id": "1e14b14c-b81a-47a7-9549-6d3eb8043572",
       "fullName": "Анзор Берая",
       "phone": "+79283449424",
-      "lastActivity": 1777897916382
+      "lastActivity": 1780652217003
     },
     {
       "id": "5ccebf55-a26f-47aa-866c-2bc1cd69d301",
       "fullName": "Георгий",
       "phone": "+79384477777",
-      "lastActivity": 1777891019985
+      "lastActivity": 1780652231338
     },
     {
       "id": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
       "fullName": "Месроп Мовсисян",
       "phone": "+79675399393",
-      "lastActivity": 1777892049151
+      "lastActivity": 1780652257335
     },
     {
       "id": "8bde670e-fdd4-4344-9d71-b6e5add26eb7",
@@ -64,7 +64,7 @@
       "model": "Octavia",
       "records": [
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "CB0452L",
           "brand": "CTR",
           "description": "Опора шаровая левая",
@@ -78,7 +78,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "CB0452R",
           "brand": "CTR",
           "description": "Опора шаровая правая",
@@ -92,7 +92,7 @@
           "status": 1
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "SP1391",
           "brand": "SANGSIN BRAKE",
           "description": "Колодки тормозные дисковые, задние",
@@ -106,7 +106,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "334834",
           "brand": "KYB",
           "description": "Амортизатор подвески передний",
@@ -120,7 +120,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "MM00492",
           "brand": "JAPANPARTS",
           "description": "Амортизатор передний GAS",
@@ -134,7 +134,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "06A103663C",
           "brand": "VAG",
           "description": "ТРУБКА МАСЛЯНОГО ЩУПА",
@@ -148,7 +148,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "NSP081Z0809957C",
           "brand": "NSP",
           "description": "Подкрылок передний левый SKODA Octavia A5 (08-13)",
@@ -162,7 +162,7 @@
           "status": 2
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "PR7043",
           "brand": "LYNXAUTO",
           "description": "Комплект задних пыльника+отбойника",
@@ -176,7 +176,7 @@
           "status": 0
         },
         {
-          "date": "2026-04-23",
+          "date": "2026-06-04",
           "catalogNumber": "88250108602",
           "brand": "DIAMOND",
           "description": "Пыльник двигателя пластик",
@@ -188,6 +188,51 @@
           "note": "—",
           "id": "9d6648b9-f5cc-4e4f-a8cf-d6a66df76ac9",
           "status": 0
+        },
+        {
+          "date": "2026-06-04",
+          "catalogNumber": "43534",
+          "brand": "5435",
+          "description": "534534",
+          "quantity": 1534,
+          "unitPriceSale": "54354",
+          "unitPricePurchase": "3455",
+          "note": "АвтоТО",
+          "status": 0,
+          "totalPrice": 83379036,
+          "purchasePrice": 5299970,
+          "prepayment": 0,
+          "id": "75c310e0-2b8e-4159-a2d4-54fa5d424641"
+        },
+        {
+          "date": "2026-06-05",
+          "catalogNumber": "13424",
+          "brand": "4324",
+          "description": "4324",
+          "quantity": 1432,
+          "unitPriceSale": "4343",
+          "unitPricePurchase": "432",
+          "note": "Автолавка",
+          "status": 0,
+          "totalPrice": 6219176,
+          "purchasePrice": 618624,
+          "prepayment": 0,
+          "id": "99de6f20-6e74-42e0-bfbf-1dbcefdcdd05"
+        },
+        {
+          "date": "2026-06-05",
+          "catalogNumber": "43243243",
+          "brand": "423432",
+          "description": "4324324",
+          "quantity": 1,
+          "unitPriceSale": "423432",
+          "unitPricePurchase": "432",
+          "note": "Автолавка",
+          "status": 0,
+          "totalPrice": 423432,
+          "purchasePrice": 432,
+          "prepayment": 0,
+          "id": "79d07976-f134-4338-abd4-b28ed2ff8385"
         }
       ],
       "carNote": "",
@@ -210,7 +255,7 @@
           "unitPriceSale": "9500",
           "unitPricePurchase": "9056",
           "note": "АвтоТО",
-          "prepayment": 0,
+          "prepayment": 123,
           "status": 2,
           "totalPrice": 9500,
           "purchasePrice": 9056,
@@ -274,7 +319,8 @@
           "totalPrice": 3000,
           "purchasePrice": 2343,
           "id": "338c3998-3120-43f1-b203-50bd976f41bc",
-          "status": 1
+          "status": 1,
+          "prepayment": 0
         },
         {
           "date": "2026-04-24",
@@ -491,7 +537,7 @@
       "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "records": [
         {
-          "date": "2026-04-25",
+          "date": "2026-06-06",
           "catalogNumber": "SP1391",
           "brand": "SANGSIN BRAKE",
           "description": "Колодки тормозные задние",
@@ -506,7 +552,7 @@
           "id": "e87aa2fd-88bd-42b7-a67f-7a2fb283c75b"
         },
         {
-          "date": "2026-04-25",
+          "date": "2026-06-06",
           "catalogNumber": "80000219",
           "brand": "CORTECO",
           "description": "Опора двигателя правая",
@@ -521,7 +567,7 @@
           "id": "6fdccad3-bcc6-4f82-a6e0-f8c1e59fa791"
         },
         {
-          "date": "2026-04-25",
+          "date": "2026-06-06",
           "catalogNumber": "602571",
           "brand": "CORTECO",
           "description": "Опора двигателя левая",
@@ -536,7 +582,7 @@
           "id": "1c29ef05-c808-4dd7-b636-274ef3edd5d7"
         },
         {
-          "date": "2026-03-29",
+          "date": "2026-06-06",
           "catalogNumber": "LF1513",
           "brand": "ZEKKERT",
           "description": "Фильтр воздушный",
@@ -551,7 +597,7 @@
           "id": "b78bb067-1c7a-422b-ba2f-4f44adbad075"
         },
         {
-          "date": "2026-03-29",
+          "date": "2026-06-06",
           "catalogNumber": "W71930",
           "brand": "MANN FILTER",
           "description": "Фильтр масляный",
@@ -566,7 +612,7 @@
           "id": "1a891953-52db-413e-8f76-e35396dd94ff"
         },
         {
-          "date": "2026-03-29",
+          "date": "2026-06-06",
           "catalogNumber": "IF3038 ",
           "brand": "ZEKKERT",
           "description": "Фильтр салонный",
@@ -581,7 +627,7 @@
           "id": "7f60ef07-98f6-45d3-b578-a81bda38dede"
         },
         {
-          "date": "2026-03-29",
+          "date": "2026-06-06",
           "catalogNumber": "156EB4 ",
           "brand": "CASTROL",
           "description": "Масло моторное CASTROL Magnatec 10W-40 4л",
@@ -616,7 +662,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "АвтоТО",
-          "prepayment": 0,
+          "prepayment": 123,
           "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
@@ -920,7 +966,7 @@
       "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "records": [
         {
-          "date": "2026-04-16",
+          "date": "2026-06-04",
           "catalogNumber": "SP2081",
           "brand": "HI-Q",
           "description": "Колодки тормозные задние",
@@ -935,7 +981,7 @@
           "id": "78797cae-4b23-4d79-befa-7d504ea573d3"
         },
         {
-          "date": "2026-04-16",
+          "date": "2026-06-04",
           "catalogNumber": "",
           "brand": "HI-Q",
           "description": "Колодки тормозные передние",
@@ -950,7 +996,7 @@
           "id": "e45f37ca-42bb-462f-b249-bbebba845b3d"
         },
         {
-          "date": "2026-04-16",
+          "date": "2026-06-04",
           "catalogNumber": "",
           "brand": "Kujiwa",
           "description": "Салонный фильтр",
@@ -1064,7 +1110,7 @@
       "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "records": [
         {
-          "date": "2026-04-16",
+          "date": "2026-06-20",
           "catalogNumber": "646948",
           "brand": "NISSENS",
           "description": "Радиатор охлаждения двигателя",
@@ -1118,7 +1164,7 @@
       "clientId": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
       "records": [
         {
-          "date": "2026-04-27",
+          "date": "2026-06-04",
           "catalogNumber": "908767",
           "brand": "Valvoline",
           "description": "Масло Моторное Valvoline Synpower Fe 5W-30 5Л",
@@ -1126,14 +1172,14 @@
           "unitPriceSale": "3911",
           "unitPricePurchase": "3911",
           "note": "Мир запчастей",
-          "prepayment": 0,
+          "prepayment": 213,
           "status": 1,
           "totalPrice": 3911,
           "purchasePrice": 3911,
           "id": "933e5df7-255e-42ce-9075-1dda6d4b52c1"
         },
         {
-          "date": "2026-04-27",
+          "date": "2026-06-04",
           "catalogNumber": "2151323001",
           "brand": "HYUNDAI ",
           "description": "Прокладка пробки масляного поддона",
@@ -1148,7 +1194,7 @@
           "id": "b3675a42-42e9-4860-ba47-a81921d91413"
         },
         {
-          "date": "2026-04-27",
+          "date": "2026-06-04",
           "catalogNumber": "281132S000",
           "brand": "HYUNDAI",
           "description": "Воздушный фильтр",
@@ -1163,7 +1209,7 @@
           "id": "c2a5322e-3263-4c7e-8d04-fa9cd0afc72c"
         },
         {
-          "date": "2026-04-27",
+          "date": "2026-06-04",
           "catalogNumber": "CU23019",
           "brand": "MANN",
           "description": "Фильтр Салон",
@@ -1178,7 +1224,7 @@
           "id": "f201a162-f6b6-4f46-b2da-f5a44ef0fbed"
         },
         {
-          "date": "2026-04-27",
+          "date": "2026-06-04",
           "catalogNumber": "W811/80",
           "brand": "MANN ",
           "description": "Фильтр масляный",

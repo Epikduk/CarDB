@@ -20,6 +20,9 @@ function App() {
   const [clientListScrollPos, setClientListScrollPos] = useState(0);
   const [clientSortBy, setClientSortBy] = useState<'name' | 'cars' | 'activity'>('name');
   const [clientStatusFilter, setClientStatusFilter] = useState<number | 'all'>('all');
+  
+  // НОВОЕ: Состояние для хранения ID открытых окон предоплаты
+  const [openPrepaymentIds, setOpenPrepaymentIds] = useState<Set<string>>(new Set());
 
   if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center font-bold text-slate-900 font-sans">Загрузка BroncomParts...</div>;
 
@@ -85,6 +88,9 @@ function App() {
             carId={currentView.carId!} clients={storage.clients} cars={storage.cars} noteOptions={storage.noteOptions}
             addRecord={storage.addRecord} updateRecord={storage.updateRecord} deleteRecord={storage.deleteRecord}
             onBack={() => setCurrentView({ type: 'list' })} 
+            // Передаем состояние предоплаты
+            openPrepaymentIds={openPrepaymentIds}
+            setOpenPrepaymentIds={setOpenPrepaymentIds}
           />
         )}
         {currentView.type === 'reporting' && <Reporting cars={storage.cars} clients={storage.clients} onBack={() => setCurrentView({ type: 'home' })} />}
