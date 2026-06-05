@@ -1,8 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, Calendar, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle, CalendarDays, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Calendar, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle, CalendarDays, ChevronDown, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CustomSelect } from '../components/CustomSelect';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { ROBOTO_FONT_BASE64 } from '../font';
 
 export function CarDetails({ 
   carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, onBack,
@@ -106,6 +109,48 @@ export function CarDetails({
     setOpenPrepaymentIds(newSet);
   };
 
+  // ФУНКЦИЯ ЭКСПОРТА PDF ЗА КОНКРЕТНЫЙ ДЕНЬ
+  const exportDayPDF = (group: any) => {
+    try {
+      const doc = new jsPDF();
+      const cleanFont = ROBOTO_FONT_BASE64.replace(/^data:font\/ttf;base64,/, '').replace(/['"()]/g, '').trim();
+      doc.addFileToVFS('Roboto-Regular.ttf', cleanFont);
+      doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+      doc.setFont('Roboto', 'normal');
+
+      doc.setFontSize(18);
+      doc.text(`ЗАКАЗ ОТ ${format(new Date(group.date), 'dd.MM.yyyy')}`, 14, 20);
+      
+      doc.setFontSize(11);
+      doc.text(`Клиент: ${client.fullName}`, 14, 30);
+      doc.text(`Автомобиль: ${car.brand} ${car.model} (${car.licensePlate || car.vin || '—'})`, 14, 37);
+
+      const tableData = group.records
+        .filter((r: any) => r.status !== 3)
+        .map((r: any) => [
+          r.brand || '—',
+          r.description,
+          r.quantity,
+          `${r.totalPrice.toLocaleString()} ₽`
+        ]);
+
+      autoTable(doc, {
+        startY: 45,
+        head: [['Бренд', 'Описание', 'Кол-во', 'Сумма']],
+        body: tableData,
+        theme: 'grid',
+        styles: { font: 'Roboto', fontStyle: 'normal', fontSize: 10 },
+        headStyles: { fillColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' },
+        foot: [['ИТОГО', '', '', `${group.sale.toLocaleString()} ₽`]],
+        footStyles: { fillColor: [241, 245, 249], textColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' }
+      });
+
+      doc.save(`Order_${group.date}_${client.fullName.replace(/\s+/g, '_')}.pdf`);
+    } catch (err) {
+      console.error("PDF Export Error:", err);
+    }
+  };
+
   if (!car || !client) return null;
 
   const timesNewRoman = { fontFamily: '"Times New Roman", Times, serif' };
@@ -197,32 +242,32 @@ export function CarDetails({
         </div>
 
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left border-collapse" style={timesNewRoman}>
+          <table className="w-full text-left table-fixed min-w-[1200px] border-collapse" style={timesNewRoman}>
             <thead className="sticky top-0 z-20 bg-slate-50 border-b border-slate-200 shadow-sm text-slate-500 text-[11px] font-bold uppercase tracking-widest font-sans">
               <tr>
                 <th className="w-[140px] px-4 py-3 text-center">Статус</th>
-                <th className="w-[150px] px-3 py-3">Артикул</th>
-                <th className="w-[130px] px-3 py-3">Бренд</th>
-                <th className="min-w-[300px] px-3 py-3">Описание</th>
-                <th className="w-[100px] px-3 py-3 text-center">Количество</th>
-                <th className="w-[150px] px-3 py-3 text-right">Итоговая сумма</th>
-                <th className="w-[120px] px-3 py-3 text-right">Закупка</th>
-                <th className="w-[180px] px-6 py-3 text-center">Примечание</th>
+                <th className="w-[150px] px-3 py-3 font-bold">Артикул</th>
+                <th className="w-[130px] px-3 py-3 font-bold">Бренд</th>
+                <th className="px-3 py-3 font-bold">Описание</th>
+                <th className="w-[100px] px-3 py-3 text-center font-bold">Количество</th>
+                <th className="w-[150px] px-3 py-3 text-right font-bold">Итоговая сумма</th>
+                <th className="w-[120px] px-3 py-3 text-right font-bold">Закупка</th>
+                <th className="w-[180px] px-6 py-3 text-center font-bold">Примечание</th>
                 <th className="w-[80px] px-3 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-[14px]">
               {(isAdding || editingId) && (
-                <tr className="bg-white border-b-2 border-green-500">
-                  <td className="p-1.5"><input type="date" style={timesNewRoman} className="w-full h-9 px-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none text-center" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.catalogNumber} onChange={e => setFormData({...formData, catalogNumber: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-center font-bold outline-none ${noArrowsClass}`} value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-green-600 bg-green-50/50 outline-none ${noArrowsClass}`} value={formData.unitPriceSale} onChange={e => setFormData({...formData, unitPriceSale: e.target.value})}/></td>
-                  <td className="p-1.5"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-red-600 bg-red-50/50 outline-none ${noArrowsClass}`} value={formData.unitPricePurchase} onChange={e => setFormData({...formData, unitPricePurchase: e.target.value})}/></td>
-                  <td className="p-1.5 overflow-visible px-4 font-serif"><CustomSelect options={sortedNoteOptions} value={formData.note} onChange={(val: string) => setFormData({...formData, note: val})} /></td>
-                  <td className="p-1.5 flex gap-1 justify-center items-center h-[50px] font-sans">
+                <tr className="bg-white border-b-2 border-green-500 sticky top-[41px] z-[19] shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
+                  <td className="p-1.5 bg-white"><input type="date" style={timesNewRoman} className="w-full h-9 px-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none text-center" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.catalogNumber} onChange={e => setFormData({...formData, catalogNumber: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="text" style={timesNewRoman} className="w-full p-2 border border-slate-200 rounded-lg text-[14px] font-bold outline-none" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-center font-bold outline-none ${noArrowsClass}`} value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-green-600 bg-green-50/50 outline-none ${noArrowsClass}`} value={formData.unitPriceSale} onChange={e => setFormData({...formData, unitPriceSale: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white"><input type="number" style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-red-600 bg-red-50/50 outline-none ${noArrowsClass}`} value={formData.unitPricePurchase} onChange={e => setFormData({...formData, unitPricePurchase: e.target.value})}/></td>
+                  <td className="p-1.5 bg-white overflow-visible px-4 font-serif"><CustomSelect options={sortedNoteOptions} value={formData.note} onChange={(val: string) => setFormData({...formData, note: val})} /></td>
+                  <td className="p-1.5 bg-white flex gap-1 justify-center items-center h-[50px] font-sans">
                     <button onClick={handleSave} className="bg-black text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-green-600">ОК</button>
                     <button onClick={() => {setIsAdding(false); setEditingId(null); setFormData({});}} className="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-600">X</button>
                   </td>
@@ -293,7 +338,23 @@ export function CarDetails({
                       <td colSpan={5} className="px-6 py-3 text-slate-400 text-[12px] font-sans font-bold tracking-tight">Итого:</td>
                       <td className="px-3 py-3 text-black text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.sale.toLocaleString()} ₽</td>
                       <td className="px-3 py-3 text-slate-500 text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.purchase.toLocaleString()} ₽</td>
-                      <td className="px-6 py-3 text-center whitespace-nowrap leading-none"><div className="flex flex-col gap-1 items-center font-sans"><span className="text-slate-400 text-[12px] font-bold tracking-tight uppercase leading-none">Прибыль:</span>{g.greenProfit !== 0 && <span className="text-green-600 text-[17px] font-bold leading-none">{g.greenProfit.toLocaleString()} ₽</span>}{g.yellowProfit !== 0 && <span className="text-yellow-600 text-[17px] font-bold leading-none">{g.yellowProfit.toLocaleString()} ₽</span>}{g.yellowProfit === 0 && g.greenProfit === 0 && <span className="text-slate-400 text-[16px] leading-none">0 ₽</span>}</div></td>
+                      <td className="px-6 py-3 text-center whitespace-nowrap leading-none">
+                        <div className="flex items-center justify-center gap-3">
+                          <div className="flex flex-col gap-1 items-center font-sans">
+                            <span className="text-slate-400 text-[12px] font-bold tracking-tight uppercase leading-none">Прибыль:</span>
+                            {g.greenProfit !== 0 && <span className="text-green-600 text-[17px] font-bold leading-none">{g.greenProfit.toLocaleString()} ₽</span>}
+                            {g.yellowProfit !== 0 && <span className="text-yellow-600 text-[17px] font-bold leading-none">{g.yellowProfit.toLocaleString()} ₽</span>}
+                            {g.yellowProfit === 0 && g.greenProfit === 0 && <span className="text-slate-400 text-[16px] leading-none">0 ₽</span>}
+                          </div>
+                          <button 
+                            onClick={() => exportDayPDF(g)}
+                            className="p-2 bg-slate-900 text-white rounded-xl hover:bg-green-600 transition-all shadow-md active:scale-95 group/pdf"
+                            title="Экспорт заказа в PDF"
+                          >
+                            <Download size={18} className="group-hover/pdf:scale-110 transition-transform" />
+                          </button>
+                        </div>
+                      </td>
                       <td></td>
                     </tr>
                   </React.Fragment>

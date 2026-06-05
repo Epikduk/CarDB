@@ -4,7 +4,7 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "!Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1780653157021
+      "lastActivity": 1780657206108
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
@@ -22,19 +22,19 @@
       "id": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
       "fullName": "Степан Ершов",
       "phone": "+79187461135",
-      "lastActivity": 1780655480927
+      "lastActivity": 1780658546017
     },
     {
       "id": "1e14b14c-b81a-47a7-9549-6d3eb8043572",
       "fullName": "Анзор Берая",
       "phone": "+79283449424",
-      "lastActivity": 1780570300358
+      "lastActivity": 1780657192092
     },
     {
       "id": "5ccebf55-a26f-47aa-866c-2bc1cd69d301",
       "fullName": "Георгий",
       "phone": "+79384477777",
-      "lastActivity": 1780653795025
+      "lastActivity": 1780657212883
     },
     {
       "id": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
@@ -76,19 +76,19 @@
       "id": "8facc369-7df8-4140-851c-5208dd4a7714",
       "fullName": "Хасет Фицев",
       "phone": "+79287201495",
-      "lastActivity": 1780655405370
+      "lastActivity": 1780658153878
     },
     {
       "id": "47df265c-7f04-47b3-b544-1976f74f3ced",
       "fullName": "Никита Окрушко",
       "phone": "",
-      "lastActivity": 1780656347747
+      "lastActivity": 1780658699643
     },
     {
       "id": "25c9fb31-4215-4a67-ab7a-6358f941371f",
       "fullName": "Юрий Васильевич Ивашов",
       "phone": "+79280137777",
-      "lastActivity": 1780655482615
+      "lastActivity": 1780658570314
     },
     {
       "id": "bbb876ea-d9af-4936-b416-557604787913",
@@ -2113,6 +2113,21 @@
           "purchasePrice": 2218,
           "prepayment": 0,
           "id": "ab1ed4f7-ee7a-437d-8841-674b9937f794"
+        },
+        {
+          "date": "2026-05-20",
+          "catalogNumber": "214",
+          "brand": "421",
+          "description": "123",
+          "quantity": 1,
+          "unitPriceSale": "421",
+          "unitPricePurchase": "241",
+          "note": "Мир запчастей",
+          "status": 0,
+          "totalPrice": 421,
+          "purchasePrice": 241,
+          "prepayment": 0,
+          "id": "5b7c8e6a-4fac-42fb-ad01-93fd1ef30a8c"
         }
       ],
       "vin": "wauzzz8t0da075441",
