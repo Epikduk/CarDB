@@ -1,22 +1,53 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 
 export function CustomSelect({ options, value, onChange, placeholder, className }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null); // Реф для самого списка
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+
+  const updateCoords = () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width
+      });
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      
+      // Проверяем, был ли клик внутри кнопки или внутри выпадающего списка
+      const clickedInsideButton = containerRef.current?.contains(target);
+      const clickedInsideDropdown = dropdownRef.current?.contains(target);
+
+      if (!clickedInsideButton && !clickedInsideDropdown) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
+    if (isOpen) {
+      updateCoords();
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('scroll', updateCoords, true);
+      window.addEventListener('resize', updateCoords);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', updateCoords, true);
+      window.removeEventListener('resize', updateCoords);
+    };
+  }, [isOpen]);
 
   return (
-    <div className={`relative ${className}`} ref={containerRef} style={{ zIndex: isOpen ? 100 : 1 }}>
+    <div className={`relative ${className}`} ref={containerRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -26,20 +57,30 @@ export function CustomSelect({ options, value, onChange, placeholder, className 
         <ChevronDown size={14} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
-      {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-100 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] overflow-hidden animate-in fade-in zoom-in duration-150 z-[200]">
+      {isOpen && createPortal(
+        <div
+          ref={dropdownRef} // Привязываем реф здесь
+          className="fixed z-[9999] bg-white border border-slate-100 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] overflow-hidden animate-in fade-in zoom-in duration-150"
+          style={{
+            top: coords.top + 4,
+            left: coords.left,
+            width: coords.width,
+          }}
+        >
           <div className="max-h-48 overflow-y-auto py-1 custom-scrollbar">
             {options.map((option: string, i: number) => (
               <button
                 key={i}
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   onChange(option);
                   setIsOpen(false);
                 }}
                 className={`w-full text-left px-4 py-2 text-[11px] font-bold transition-colors ${
-                  value === option 
-                    ? 'bg-green-50 text-green-600' 
+                  value === option
+                    ? 'bg-green-50 text-green-600'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-black'
                 }`}
               >
@@ -47,7 +88,8 @@ export function CustomSelect({ options, value, onChange, placeholder, className 
               </button>
             ))}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

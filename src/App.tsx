@@ -89,10 +89,11 @@ function App() {
             clients={storage.clients} 
             cars={storage.cars} 
             noteOptions={storage.noteOptions}
+            lastUsedNote={storage.lastUsedNote} // Передаем последнее примечание
             addRecord={storage.addRecord} 
             updateRecord={storage.updateRecord} 
             deleteRecord={storage.deleteRecord}
-            updateGroupDate={storage.updateGroupDate} // ПЕРЕДАЕМ ФУНКЦИЮ ТУТ
+            updateGroupDate={storage.updateGroupDate}
             onBack={() => setCurrentView({ type: 'list' })} 
             openPrepaymentIds={openPrepaymentIds}
             setOpenPrepaymentIds={setOpenPrepaymentIds}

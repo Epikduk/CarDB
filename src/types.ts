@@ -11,6 +11,7 @@ export interface MaintenanceRecord {
   purchasePrice: number;
   note: string;
   status?: number;
+  prepayment?: number;
 }
 
 export interface Car {
@@ -36,4 +37,5 @@ export interface AppData {
   clients: Client[];
   cars: Car[];
   noteOptions: string[];
+  lastUsedNote?: string; // Новое поле
 }

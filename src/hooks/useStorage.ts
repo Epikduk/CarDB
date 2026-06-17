@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Client, Car, MaintenanceRecord, AppData } from '../types';
 
-const initialData: AppData = { clients: [], cars: [], noteOptions: [] };
+const initialData: AppData = { clients: [], cars: [], noteOptions: [], lastUsedNote: '' };
 
 export function useStorage() {
   const [data, setData] = useState<AppData>(initialData);
@@ -79,6 +79,7 @@ export function useStorage() {
   const addRecord = (carId: string, record: Omit<MaintenanceRecord, 'id'>) => {
     setData(prev => ({
       ...prev,
+      lastUsedNote: record.note, // Сохраняем последнее примечание
       cars: prev.cars.map(car => car.id === carId ? { ...car, records: [...car.records, { ...record, id: crypto.randomUUID() }] } : car)
     }));
   };
@@ -86,6 +87,7 @@ export function useStorage() {
   const updateRecord = (carId: string, recordId: string, updatedFields: Partial<MaintenanceRecord>) => {
     setData(prev => ({
       ...prev,
+      ...(updatedFields.note ? { lastUsedNote: updatedFields.note } : {}), // Обновляем, если изменилось примечание
       cars: prev.cars.map(car => car.id === carId ? {
         ...car,
         records: car.records.map(r => r.id === recordId ? { ...r, ...updatedFields } : r)
@@ -93,7 +95,6 @@ export function useStorage() {
     }));
   };
 
-  // НОВАЯ ФУНКЦИЯ: Массовое обновление даты для группы записей
   const updateGroupDate = (carId: string, oldDate: string, newDate: string) => {
     setData(prev => ({
       ...prev,
@@ -111,7 +112,11 @@ export function useStorage() {
   const updateNoteOptions = (newOptions: string[]) => { setData(prev => ({ ...prev, noteOptions: newOptions })); };
 
   return {
-    isLoaded, clients: data.clients, cars: data.cars, noteOptions: data.noteOptions,
+    isLoaded, 
+    clients: data.clients, 
+    cars: data.cars, 
+    noteOptions: data.noteOptions,
+    lastUsedNote: data.lastUsedNote, // Экспортируем
     addClient, updateClient, deleteClient,
     addCarToClient, updateCar, deleteCar,
     addRecord, updateRecord, deleteRecord,

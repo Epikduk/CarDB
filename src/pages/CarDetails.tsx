@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { ROBOTO_FONT_BASE64 } from '../font';
 
 export function CarDetails({ 
-  carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, updateGroupDate, onBack,
+  carId, clients, cars, noteOptions, lastUsedNote, addRecord, updateRecord, deleteRecord, updateGroupDate, onBack,
   openPrepaymentIds, setOpenPrepaymentIds 
 }: any) {
   const car = cars.find((c: any) => c.id === carId);
@@ -26,13 +26,33 @@ export function CarDetails({
     window.scrollTo(0, 0);
   }, []);
 
-  const sortedNoteOptions = useMemo(() => [...noteOptions].sort((a, b) => a.localeCompare(b)), [noteOptions]);
+  const sortedNoteOptions = useMemo(() => {
+    if (!noteOptions || noteOptions.length === 0) return [];
+    const otherOptions = noteOptions
+      .filter((opt: string) => opt !== lastUsedNote)
+      .sort((a: string, b: string) => a.localeCompare(b));
+    
+    if (lastUsedNote && noteOptions.includes(lastUsedNote)) {
+      return [lastUsedNote, ...otherOptions];
+    }
+    return otherOptions;
+  }, [noteOptions, lastUsedNote]);
 
   useEffect(() => {
     if (isAdding && !formData.date) {
-      setFormData({ date: format(new Date(), 'yyyy-MM-dd'), catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: sortedNoteOptions[0] || '', status: 0 });
+      setFormData({ 
+        date: format(new Date(), 'yyyy-MM-dd'), 
+        catalogNumber: '', 
+        brand: '', 
+        description: '', 
+        quantity: '1', 
+        unitPriceSale: '', 
+        unitPricePurchase: '', 
+        note: lastUsedNote || sortedNoteOptions[0] || '', 
+        status: 0 
+      });
     }
-  }, [isAdding, sortedNoteOptions]);
+  }, [isAdding, sortedNoteOptions, lastUsedNote]);
 
   const filteredGroupedRecords = useMemo(() => {
     if (!car) return [];
@@ -89,7 +109,17 @@ export function CarDetails({
   };
 
   const handleAddAtDate = (date: string) => {
-    setFormData({ date, catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: sortedNoteOptions[0] || '', status: 0 });
+    setFormData({ 
+      date, 
+      catalogNumber: '', 
+      brand: '', 
+      description: '', 
+      quantity: '1', 
+      unitPriceSale: '', 
+      unitPricePurchase: '', 
+      note: lastUsedNote || sortedNoteOptions[0] || '', 
+      status: 0 
+    });
     setIsAdding(true); 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
