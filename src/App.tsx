@@ -85,10 +85,15 @@ function App() {
 
         {currentView.type === 'details' && (
           <CarDetails 
-            carId={currentView.carId!} clients={storage.clients} cars={storage.cars} noteOptions={storage.noteOptions}
-            addRecord={storage.addRecord} updateRecord={storage.updateRecord} deleteRecord={storage.deleteRecord}
+            carId={currentView.carId!} 
+            clients={storage.clients} 
+            cars={storage.cars} 
+            noteOptions={storage.noteOptions}
+            addRecord={storage.addRecord} 
+            updateRecord={storage.updateRecord} 
+            deleteRecord={storage.deleteRecord}
+            updateGroupDate={storage.updateGroupDate} // ПЕРЕДАЕМ ФУНКЦИЮ ТУТ
             onBack={() => setCurrentView({ type: 'list' })} 
-            // Передаем состояние предоплаты
             openPrepaymentIds={openPrepaymentIds}
             setOpenPrepaymentIds={setOpenPrepaymentIds}
           />

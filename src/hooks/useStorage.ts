@@ -21,7 +21,6 @@ export function useStorage() {
     window.electronAPI.writeDB(data);
   }, [data, isLoaded]);
 
-  // НОВАЯ ФУНКЦИЯ: Обновление времени активности клиента
   const updateClientActivity = (clientId: string) => {
     setData(prev => ({
       ...prev,
@@ -94,6 +93,17 @@ export function useStorage() {
     }));
   };
 
+  // НОВАЯ ФУНКЦИЯ: Массовое обновление даты для группы записей
+  const updateGroupDate = (carId: string, oldDate: string, newDate: string) => {
+    setData(prev => ({
+      ...prev,
+      cars: prev.cars.map(car => car.id === carId ? {
+        ...car,
+        records: car.records.map(r => r.date === oldDate ? { ...r, date: newDate } : r)
+      } : car)
+    }));
+  };
+
   const deleteRecord = (carId: string, recordId: string) => {
     setData(prev => ({ ...prev, cars: prev.cars.map(car => car.id === carId ? { ...car, records: car.records.filter(r => r.id !== recordId) } : car) }));
   };
@@ -105,6 +115,6 @@ export function useStorage() {
     addClient, updateClient, deleteClient,
     addCarToClient, updateCar, deleteCar,
     addRecord, updateRecord, deleteRecord,
-    updateNoteOptions, updateClientActivity
+    updateNoteOptions, updateClientActivity, updateGroupDate
   };
 }

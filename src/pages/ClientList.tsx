@@ -29,25 +29,35 @@ export function ClientList({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [setScrollPos]);
 
-  // --- ЛОГИКА ПОИСКА И СОРТИРОВКИ ---
+  // --- ЛОГИКА ПОИСКА И СОРТИРОВКИ (ОБНОВЛЕННАЯ) ---
   const groupedData = useMemo(() => {
     const term = searchTerm.toLowerCase();
     
     const filtered = clients.map((client: any) => {
       const clientCars = cars.filter((car: any) => car.clientId === client.id);
       
+      // Проверяем совпадение по клиенту
+      const isClientMatch = (client.fullName + client.phone).toLowerCase().includes(term);
+
       const filteredCars = clientCars.filter((car: any) => {
+        // Проверяем совпадение по данным машины
         const carInfo = (car.brand + car.model + car.vin + (car.licensePlate || '')).toLowerCase();
         const isHistoryMatch = car.records?.some((record: any) => 
           (record.description + (record.catalogNumber || '') + (record.brand || '')).toLowerCase().includes(term)
         );
-        const matchesSearch = carInfo.includes(term) || isHistoryMatch;
+        const isCarMatch = carInfo.includes(term) || isHistoryMatch;
+
+        // ЛОГИКА: если совпал клиент, показываем все его машины. 
+        // Если не совпал клиент, показываем только те машины, что совпали по поиску.
+        const matchesSearch = isClientMatch || isCarMatch;
+        
+        // Фильтр по статусу всегда должен соблюдаться
         const matchesStatus = statusFilter === 'all' || car.records?.some((r: any) => r.status === statusFilter);
 
         return matchesSearch && matchesStatus;
       });
 
-      const isClientMatch = (client.fullName + client.phone).toLowerCase().includes(term);
+      // Решаем, отображать ли карточку клиента
       const hasMatch = statusFilter === 'all' 
         ? (isClientMatch || filteredCars.length > 0)
         : (filteredCars.length > 0);
@@ -63,7 +73,7 @@ export function ClientList({
     });
   }, [clients, cars, searchTerm, sortBy, statusFilter]);
 
-  // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ РАСКРЫТИЯ С АВТОСКРОЛЛОМ ---
+  // --- ФУНКЦИЯ РАСКРЫТИЯ С АВТОСКРОЛЛОМ ---
   const toggleExpand = (clientId: string) => {
     const isExpanding = !expandedClientIds.has(clientId);
     const newSet = new Set(expandedClientIds);
@@ -75,12 +85,11 @@ export function ClientList({
     }
     setExpandedClientIds(newSet);
 
-    // Если открываем карточку — скроллим к ней
     if (isExpanding) {
       setTimeout(() => {
         const element = document.getElementById(`client-card-${clientId}`);
         if (element) {
-          const navHeight = 80; // Высота шапки с запасом
+          const navHeight = 80;
           const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
           const offsetPosition = elementPosition - navHeight;
 
@@ -89,7 +98,7 @@ export function ClientList({
             behavior: 'smooth'
           });
         }
-      }, 150); // Небольшая задержка, чтобы React успел отрисовать вложенный список
+      }, 150);
     }
   };
 
@@ -143,7 +152,9 @@ export function ClientList({
       <div className="grid grid-cols-1 gap-4">
         {groupedData.map(({ client, clientCars, filteredCars }: any) => {
           const isExpanded = expandedClientIds.has(client.id);
-          const displayCars = statusFilter === 'all' && !searchTerm ? clientCars : filteredCars;
+          // Теперь filteredCars уже содержит все машины клиента, если совпало имя,
+          // либо только отфильтрованные машины, если совпали они.
+          const displayCars = filteredCars;
           
           return (
             <div 

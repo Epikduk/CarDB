@@ -1,14 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, Calendar, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle, CalendarDays, ChevronDown, Download } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Search, Edit2, X as CloseIcon, ShoppingCart, CheckCircle2, RotateCcw, Wallet, XCircle, Download, Check, X } from 'lucide-react';
 import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { CustomSelect } from '../components/CustomSelect';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ROBOTO_FONT_BASE64 } from '../font';
 
 export function CarDetails({ 
-  carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, onBack,
+  carId, clients, cars, noteOptions, addRecord, updateRecord, deleteRecord, updateGroupDate, onBack,
   openPrepaymentIds, setOpenPrepaymentIds 
 }: any) {
   const car = cars.find((c: any) => c.id === carId);
@@ -20,15 +19,12 @@ export function CarDetails({
   const [formData, setFormData] = useState<any>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  // --- ЭФФЕКТ: СКРОЛЛ В САМЫЙ ВЕРХ ПРИ ВХОДЕ НА СТРАНИЦУ ---
+  const [editingGroupDate, setEditingGroupDate] = useState<string | null>(null);
+  const [tempDateValue, setTempDateValue] = useState<string>('');
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  // Состояния для массового изменения даты
-  const [isBulkDateModalOpen, setIsBulkDateModalOpen] = useState(false);
-  const [bulkDateFrom, setBulkDateFrom] = useState('');
-  const [bulkDateTo, setBulkDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));
 
   const sortedNoteOptions = useMemo(() => [...noteOptions].sort((a, b) => a.localeCompare(b)), [noteOptions]);
 
@@ -50,13 +46,13 @@ export function CarDetails({
     
     return Object.keys(groups).sort((a,b) => b.localeCompare(a)).map(date => {
       const dayRecords = groups[date];
-      
       const activeRecords = dayRecords.filter((r: any) => r.status !== 3);
-      const totalSale = activeRecords.reduce((s: number, r: any) => s + (r.totalPrice || 0), 0);
-      const totalPurchase = activeRecords.reduce((s: number, r: any) => s + (r.purchasePrice || 0), 0);
       
-      const yellowProfit = dayRecords.filter((r: any) => r.status === 1).reduce((s: number, r: any) => s + (r.totalPrice - r.purchasePrice), 0);
-      const greenProfit = dayRecords.filter((r: any) => r.status === 2).reduce((s: number, r: any) => s + (r.totalPrice - r.purchasePrice), 0);
+      const totalSale = activeRecords.reduce((s: number, r: any) => s + (Number(r.totalPrice) || 0), 0);
+      const totalPurchase = activeRecords.reduce((s: number, r: any) => s + (Number(r.purchasePrice) || 0), 0);
+      
+      const yellowProfit = dayRecords.filter((r: any) => r.status === 1).reduce((s: number, r: any) => s + ((Number(r.totalPrice) || 0) - (Number(r.purchasePrice) || 0)), 0);
+      const greenProfit = dayRecords.filter((r: any) => r.status === 2).reduce((s: number, r: any) => s + ((Number(r.totalPrice) || 0) - (Number(r.purchasePrice) || 0)), 0);
       
       return { date, records: dayRecords, sale: totalSale, purchase: totalPurchase, yellowProfit, greenProfit };
     });
@@ -64,27 +60,32 @@ export function CarDetails({
 
   const handleSave = () => {
     const qty = Number(formData.quantity) || 0;
-    const data = { ...formData, quantity: qty, totalPrice: qty * Number(formData.unitPriceSale), purchasePrice: qty * Number(formData.unitPricePurchase), prepayment: Number(formData.prepayment) || 0 };
-    if (editingId) updateRecord(car.id, editingId, data); else addRecord(car.id, data);
-    setIsAdding(false); setEditingId(null); setFormData({});
+    const salePrice = Number(formData.unitPriceSale) || 0;
+    const purchasePrice = Number(formData.unitPricePurchase) || 0;
+
+    const data = { 
+      ...formData, 
+      quantity: qty, 
+      unitPriceSale: salePrice,
+      unitPricePurchase: purchasePrice,
+      totalPrice: qty * salePrice, 
+      purchasePrice: qty * purchasePrice, 
+      prepayment: Number(formData.prepayment) || 0 
+    };
+
+    if (editingId) updateRecord(car.id, editingId, data); 
+    else addRecord(car.id, data);
+
+    setIsAdding(false); 
+    setEditingId(null); 
+    setFormData({});
   };
 
-  const handleBulkDateUpdate = () => {
-    if (!bulkDateFrom || !bulkDateTo) return;
-    
-    const recordsToUpdate = car.records.filter((r: any) => {
-      const formattedRecDate = format(new Date(r.date), 'dd.MM.yyyy');
-      return formattedRecDate === bulkDateFrom;
-    });
-    
-    if (recordsToUpdate.length === 0) return;
-
-    recordsToUpdate.forEach((r: any) => {
-      updateRecord(car.id, r.id, { ...r, date: bulkDateTo });
-    });
-    
-    setIsBulkDateModalOpen(false);
-    setBulkDateFrom('');
+  const handleConfirmDateChange = (oldDate: string) => {
+    if (tempDateValue && tempDateValue !== oldDate) {
+      updateGroupDate(car.id, oldDate, tempDateValue);
+    }
+    setEditingGroupDate(null);
   };
 
   const handleAddAtDate = (date: string) => {
@@ -109,7 +110,6 @@ export function CarDetails({
     setOpenPrepaymentIds(newSet);
   };
 
-  // ФУНКЦИЯ ЭКСПОРТА PDF ЗА КОНКРЕТНЫЙ ДЕНЬ
   const exportDayPDF = (group: any) => {
     try {
       const doc = new jsPDF();
@@ -117,38 +117,20 @@ export function CarDetails({
       doc.addFileToVFS('Roboto-Regular.ttf', cleanFont);
       doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
       doc.setFont('Roboto', 'normal');
-
       doc.setFontSize(18);
       doc.text(`ЗАКАЗ ОТ ${format(new Date(group.date), 'dd.MM.yyyy')}`, 14, 20);
-      
       doc.setFontSize(11);
-      doc.text(`Клиент: ${client.fullName}`, 14, 30);
-      doc.text(`Автомобиль: ${car.brand} ${car.model} (${car.licensePlate || car.vin || '—'})`, 14, 37);
-
-      const tableData = group.records
-        .filter((r: any) => r.status !== 3)
-        .map((r: any) => [
-          r.brand || '—',
-          r.description,
-          r.quantity,
-          `${r.totalPrice.toLocaleString()} ₽`
-        ]);
-
+      doc.text(`Автомобиль: ${car.brand} ${car.model} (${car.licensePlate || car.vin || '—'})`, 14, 30);
+      const tableData = group.records.filter((r: any) => r.status !== 3).map((r: any) => [r.brand || '—', r.description, r.quantity, `${(r.totalPrice || 0).toLocaleString()} ₽`]);
       autoTable(doc, {
-        startY: 45,
-        head: [['Бренд', 'Описание', 'Кол-во', 'Сумма']],
-        body: tableData,
-        theme: 'grid',
+        startY: 38, head: [['Бренд', 'Описание', 'Кол-во', 'Сумма']], body: tableData, theme: 'grid',
         styles: { font: 'Roboto', fontStyle: 'normal', fontSize: 10 },
         headStyles: { fillColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' },
-        foot: [['ИТОГО', '', '', `${group.sale.toLocaleString()} ₽`]],
+        foot: [['ИТОГО', '', '', `${(group.sale || 0).toLocaleString()} ₽`]],
         footStyles: { fillColor: [241, 245, 249], textColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' }
       });
-
       doc.save(`Order_${group.date}_${client.fullName.replace(/\s+/g, '_')}.pdf`);
-    } catch (err) {
-      console.error("PDF Export Error:", err);
-    }
+    } catch (err) { console.error("PDF Export Error:", err); }
   };
 
   if (!car || !client) return null;
@@ -156,88 +138,56 @@ export function CarDetails({
   const timesNewRoman = { fontFamily: '"Times New Roman", Times, serif' };
   const noArrowsClass = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
-  const availableDatesFormatted = Array.from(new Set(car.records.map((r: any) => 
-    format(new Date(r.date), 'dd.MM.yyyy')
-  ))).sort((a, b) => b.localeCompare(a));
-
   return (
     <div className="p-4 max-w-[1400px] mx-auto animate-in fade-in duration-500 text-left">
-      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 mb-4 font-bold uppercase text-[10px] hover:text-green-600 transition-colors group"><ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Назад</button>
+      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 mb-4 font-bold uppercase text-[10px] hover:text-green-600 transition-colors group">
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Назад
+      </button>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 mb-6 flex justify-between items-start shadow-sm relative overflow-hidden text-slate-900">
         <div className="absolute top-0 left-0 w-1.5 h-full bg-green-500"></div>
         <div className="flex-1 flex flex-col gap-4 text-left">
           <div>
             <h1 className="text-2xl font-black text-black uppercase italic tracking-tight leading-none">{car.brand} {car.model} <span className="text-slate-400 font-normal ml-2">{car.year}</span></h1>
-            <div className="mt-4 flex flex-col gap-1"><span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">VIN Номер</span><span className="text-[13px] font-bold uppercase tracking-wider leading-none">{car.vin || '—'}</span></div>
-            {car.carNote && (<div className="mt-3 flex flex-col gap-1"><span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Примечание</span><span className="text-[13px] font-bold uppercase tracking-wider leading-tight">{car.carNote}</span></div>)}
+            <div className="mt-4 flex flex-col gap-1">
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">VIN Номер</span>
+              <span className="text-[13px] font-bold uppercase tracking-wider leading-none">{car.vin || '—'}</span>
+            </div>
+            {car.carNote && (
+              <div className="mt-3 flex flex-col gap-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Примечание</span>
+                <span className="text-[13px] font-bold uppercase tracking-wider leading-tight">{car.carNote}</span>
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex gap-10 items-center h-full self-center text-left mr-8"><div className="w-px bg-slate-100 h-16"></div><div><p className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest leading-none">Владелец</p><p className="text-xl font-bold text-black leading-none">{client.fullName}</p><p className="text-green-600 text-[12px] mt-2 font-bold">{client.phone}</p></div></div>
+        <div className="flex gap-10 items-center h-full self-center text-left mr-8">
+          <div className="w-px bg-slate-100 h-16"></div>
+          <div>
+            <p className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest leading-none">Владелец</p>
+            <p className="text-xl font-bold text-black leading-none">{client.fullName}</p>
+            <p className="text-green-600 text-[12px] mt-2 font-bold">{client.phone}</p>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl mb-12 relative overflow-hidden">
         <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center relative z-50">
           <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">История обслуживания</h2>
           <div className="flex gap-2 text-left items-center">
-            <div className="relative w-64 h-9"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} /><input type="text" placeholder="Поиск по истории..." className="w-full h-full pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-xs focus:border-green-500 transition-all outline-none font-bold shadow-sm font-sans" value={historySearch} onChange={e => setHistorySearch(e.target.value)} /></div>
-            
-            <div className="relative">
-              <button 
-                onClick={() => setIsBulkDateModalOpen(!isBulkDateModalOpen)}
-                className={`btn-action !h-9 !px-4 !bg-white border border-slate-200 !text-slate-500 hover:!border-green-500 hover:!text-green-600 shadow-none font-sans ${isBulkDateModalOpen ? '!border-green-500 !text-green-600' : ''}`}
-                title="Перенести все записи на другую дату"
-              >
-                <CalendarDays size={16} />
-              </button>
-
-              {isBulkDateModalOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-[100] p-5 animate-in zoom-in-95 duration-200">
-                  <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase text-slate-900 tracking-[0.15em] mb-4 italic">Перенос даты заказа</h4>
-                    
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase text-slate-400 block ml-1 tracking-tighter">С какой даты:</label>
-                      <CustomSelect 
-                        options={availableDatesFormatted} 
-                        value={bulkDateFrom} 
-                        onChange={setBulkDateFrom} 
-                        placeholder="Выберите дату"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase text-slate-400 block ml-1 tracking-tighter">На какую дату:</label>
-                      <div className="relative group/picker">
-                        <input 
-                          type="date" 
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                          value={bulkDateTo}
-                          onChange={(e) => setBulkDateTo(e.target.value)}
-                          onClick={(e) => (e.currentTarget as any).showPicker()}
-                        />
-                        <div className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-[11px] font-bold text-slate-800 shadow-sm group-hover/picker:border-green-500 transition-all">
-                          <span className="truncate">
-                            {bulkDateTo ? format(new Date(bulkDateTo), 'dd.MM.yyyy') : 'Выберите дату'}
-                          </span>
-                          <ChevronDown size={14} className="text-slate-400" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button 
-                      onClick={handleBulkDateUpdate}
-                      disabled={!bulkDateFrom || !bulkDateTo}
-                      className="w-full bg-slate-950 text-white py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-green-600 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-lg active:scale-95"
-                    >
-                      Обновить записи
-                    </button>
-                  </div>
-                </div>
-              )}
+            <div className="relative w-64 h-9">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+              <input type="text" placeholder="Поиск по истории..." className="w-full h-full pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-xs focus:border-green-500 transition-all outline-none font-bold shadow-sm font-sans" value={historySearch} onChange={e => setHistorySearch(e.target.value)} />
             </div>
-
-            {!isAdding ? <button onClick={() => { setFormData({}); setIsAdding(true); }} className="btn-action !h-9 font-sans"><Plus size={16} /> Добавить</button> : <button onClick={() => { setIsAdding(false); setEditingId(null); setFormData({}); }} className="bg-red-600 text-white font-bold px-6 h-9 rounded-xl text-[10px] uppercase transition-all shadow-md font-sans"><CloseIcon size={16} className="inline mr-1" /> Отменить</button>}
+            {!isAdding ? (
+              <button onClick={() => { setFormData({}); setIsAdding(true); }} className="btn-action !h-9 font-sans">
+                <Plus size={16} /> Добавить
+              </button>
+            ) : (
+              <button onClick={() => { setIsAdding(false); setEditingId(null); setFormData({}); }} className="bg-red-600 text-white font-bold px-6 h-9 rounded-xl text-[10px] uppercase transition-all shadow-md font-sans">
+                <CloseIcon size={16} className="inline mr-1" /> Отменить
+              </button>
+            )}
           </div>
         </div>
 
@@ -276,6 +226,7 @@ export function CarDetails({
               {filteredGroupedRecords.map((g: any) => {
                 const recordIdForPrepayment = g.records[0]?.id;
                 const isPrepaymentOpen = openPrepaymentIds.has(recordIdForPrepayment);
+                const isEditingThisGroup = editingGroupDate === g.date;
 
                 return (
                   <React.Fragment key={g.date}>
@@ -283,10 +234,27 @@ export function CarDetails({
                       <td colSpan={9} className="px-4 py-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 tracking-widest whitespace-nowrap mr-2 leading-none font-sans text-slate-400">
-                              <Calendar size={14} className="text-green-600" />
-                              {format(new Date(g.date), 'dd.MM.yyyy')}
-                            </div>
+                            {isEditingThisGroup ? (
+                              <div className="flex items-center gap-1.5 animate-in slide-in-from-left-2 duration-200">
+                                <input 
+                                  type="date" 
+                                  className="px-3 py-1 bg-white border-2 border-green-500 rounded-xl font-bold text-slate-900 outline-none shadow-sm text-[13px]"
+                                  value={tempDateValue}
+                                  onChange={(e) => setTempDateValue(e.target.value)}
+                                  autoFocus
+                                />
+                                <button onClick={() => handleConfirmDateChange(g.date)} className="p-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-sm transition-all active:scale-90"><Check size={16} /></button>
+                                <button onClick={() => setEditingGroupDate(null)} className="p-1.5 bg-white text-slate-400 border border-slate-200 rounded-lg hover:text-red-600 transition-all active:scale-90"><X size={16} /></button>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={() => { setEditingGroupDate(g.date); setTempDateValue(g.date); }}
+                                className="px-4 py-1.5 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-500 font-bold tracking-[0.15em] transition-all hover:border-green-500 hover:text-green-600 cursor-pointer text-[12px]"
+                              >
+                                {format(new Date(g.date), 'dd.MM.yyyy')}
+                              </button>
+                            )}
+
                             <div className="flex items-center gap-1.5 bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm font-sans">
                               <button onClick={() => handleGroupStatus(g.records, 0)} title="Сброс" className="p-1 text-slate-300 hover:bg-slate-100 rounded transition-all"><RotateCcw size={14}/></button>
                               <button onClick={() => handleGroupStatus(g.records, 1)} title="Заказано" className="p-1 text-yellow-500 hover:bg-yellow-50 rounded transition-all"><ShoppingCart size={14}/></button>
@@ -320,8 +288,8 @@ export function CarDetails({
                         <td className={`px-3 py-1.5 font-bold ${r.status === 3 ? '' : 'text-slate-800'}`}>{r.brand || '—'}</td>
                         <td className="px-3 py-1.5 font-medium">{r.description}</td>
                         <td className="px-3 py-1.5 text-center font-bold">{r.quantity}</td>
-                        <td className="px-3 py-1.5 text-right font-bold whitespace-nowrap"><div>{r.totalPrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-400 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPriceSale || 0).toLocaleString()} / шт</span></div></td>
-                        <td className="px-3 py-1.5 text-right font-bold text-slate-400 whitespace-nowrap"><div>{r.purchasePrice.toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-300 font-bold normal-case tracking-tight"><span className="normal-case">{(r.unitPricePurchase || 0).toLocaleString()} / шт</span></div></td>
+                        <td className="px-3 py-1.5 text-right font-bold whitespace-nowrap"><div>{(Number(r.totalPrice) || 0).toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-400 font-bold normal-case tracking-tight"><span className="normal-case">{(Number(r.unitPriceSale) || 0).toLocaleString()} / шт</span></div></td>
+                        <td className="px-3 py-1.5 text-right font-bold text-slate-400 whitespace-nowrap"><div>{(Number(r.purchasePrice) || 0).toLocaleString()} ₽</div><div className="text-[11.5px] text-slate-300 font-bold normal-case tracking-tight"><span className="normal-case">{(Number(r.unitPricePurchase) || 0).toLocaleString()} / шт</span></div></td>
                         <td className="px-6 py-1.5 text-center">{r.note}</td>
                         <td className="px-3 py-1.5 text-right"><div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all font-sans">
                           <button onClick={() => { 
@@ -336,10 +304,10 @@ export function CarDetails({
                     ))}
                     <tr className="bg-slate-50/40 text-right border-b border-slate-200/50 uppercase">
                       <td colSpan={5} className="px-6 py-3 text-slate-400 text-[12px] font-sans font-bold tracking-tight">Итого:</td>
-                      <td className="px-3 py-3 text-black text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.sale.toLocaleString()} ₽</td>
-                      <td className="px-3 py-3 text-slate-500 text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{g.purchase.toLocaleString()} ₽</td>
+                      <td className="px-3 py-3 text-black text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{(g.sale || 0).toLocaleString()} ₽</td>
+                      <td className="px-3 py-3 text-slate-500 text-[16px] font-bold border-r border-slate-100/50 whitespace-nowrap">{(g.purchase || 0).toLocaleString()} ₽</td>
                       <td className="px-6 py-3 text-center whitespace-nowrap leading-none">
-                        <div className="flex items-center justify-center gap-3">
+                        <div className="flex items-center justify-center gap-10">
                           <div className="flex flex-col gap-1 items-center font-sans">
                             <span className="text-slate-400 text-[12px] font-bold tracking-tight uppercase leading-none">Прибыль:</span>
                             {g.greenProfit !== 0 && <span className="text-green-600 text-[17px] font-bold leading-none">{g.greenProfit.toLocaleString()} ₽</span>}
