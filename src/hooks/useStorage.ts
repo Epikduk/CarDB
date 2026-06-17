@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Client, Car, MaintenanceRecord, AppData } from '../types';
+import { Client, Car, MaintenanceRecord, AppData, WarehouseCategory, WarehouseItem } from '../types';
 
-const initialData: AppData = { clients: [], cars: [], noteOptions: [], lastUsedNote: '' };
+const initialData: AppData = { 
+  clients: [], 
+  cars: [], 
+  noteOptions: [], 
+  lastUsedNote: '',
+  warehouseCategories: [],
+  warehouseItems: []
+};
 
 export function useStorage() {
   const [data, setData] = useState<AppData>(initialData);
@@ -10,7 +17,17 @@ export function useStorage() {
 
   useEffect(() => {
     window.electronAPI.readDB().then((savedData) => {
-      if (savedData) setData(prev => ({ ...initialData, ...savedData }));
+      if (savedData) {
+        // Гарантируем наличие всех полей, даже если их нет в JSON
+        setData({
+          clients: savedData.clients || [],
+          cars: savedData.cars || [],
+          noteOptions: savedData.noteOptions || [],
+          lastUsedNote: savedData.lastUsedNote || '',
+          warehouseCategories: savedData.warehouseCategories || [],
+          warehouseItems: savedData.warehouseItems || []
+        });
+      }
       setIsLoaded(true);
     });
   }, []);
@@ -24,9 +41,7 @@ export function useStorage() {
   const updateClientActivity = (clientId: string) => {
     setData(prev => ({
       ...prev,
-      clients: prev.clients.map(c => 
-        c.id === clientId ? { ...c, lastActivity: Date.now() } : c
-      )
+      clients: prev.clients.map(c => c.id === clientId ? { ...c, lastActivity: Date.now() } : c)
     }));
   };
 
@@ -38,26 +53,15 @@ export function useStorage() {
       vin: carData.vin, brand: carData.brand, model: carData.model,
       year: carData.year, licensePlate: carData.licensePlate, carNote: carData.carNote
     };
-    setData(prev => ({ 
-      ...prev, 
-      clients: [...prev.clients, newClient], 
-      cars: [...prev.cars, newCar] 
-    }));
+    setData(prev => ({ ...prev, clients: [...prev.clients, newClient], cars: [...prev.cars, newCar] }));
   };
 
   const updateClient = (id: string, updatedFields: Partial<Client>) => {
-    setData(prev => ({
-      ...prev,
-      clients: prev.clients.map(c => c.id === id ? { ...c, ...updatedFields } : c)
-    }));
+    setData(prev => ({ ...prev, clients: prev.clients.map(c => c.id === id ? { ...c, ...updatedFields } : c) }));
   };
 
   const deleteClient = (clientId: string) => {
-    setData(prev => ({
-      ...prev,
-      clients: prev.clients.filter(c => c.id !== clientId),
-      cars: prev.cars.filter(car => car.clientId !== clientId)
-    }));
+    setData(prev => ({ ...prev, clients: prev.clients.filter(c => c.id !== clientId), cars: prev.cars.filter(car => car.clientId !== clientId) }));
   };
 
   const addCarToClient = (clientId: string, carData: any) => {
@@ -66,10 +70,7 @@ export function useStorage() {
   };
 
   const updateCar = (id: string, updatedFields: Partial<Car>) => {
-    setData(prev => ({
-      ...prev,
-      cars: prev.cars.map(c => c.id === id ? { ...c, ...updatedFields } : c)
-    }));
+    setData(prev => ({ ...prev, cars: prev.cars.map(c => c.id === id ? { ...c, ...updatedFields } : c) }));
   };
 
   const deleteCar = (carId: string) => {
@@ -79,7 +80,7 @@ export function useStorage() {
   const addRecord = (carId: string, record: Omit<MaintenanceRecord, 'id'>) => {
     setData(prev => ({
       ...prev,
-      lastUsedNote: record.note, // Сохраняем последнее примечание
+      lastUsedNote: record.note,
       cars: prev.cars.map(car => car.id === carId ? { ...car, records: [...car.records, { ...record, id: crypto.randomUUID() }] } : car)
     }));
   };
@@ -87,7 +88,7 @@ export function useStorage() {
   const updateRecord = (carId: string, recordId: string, updatedFields: Partial<MaintenanceRecord>) => {
     setData(prev => ({
       ...prev,
-      ...(updatedFields.note ? { lastUsedNote: updatedFields.note } : {}), // Обновляем, если изменилось примечание
+      ...(updatedFields.note ? { lastUsedNote: updatedFields.note } : {}),
       cars: prev.cars.map(car => car.id === carId ? {
         ...car,
         records: car.records.map(r => r.id === recordId ? { ...r, ...updatedFields } : r)
@@ -98,10 +99,7 @@ export function useStorage() {
   const updateGroupDate = (carId: string, oldDate: string, newDate: string) => {
     setData(prev => ({
       ...prev,
-      cars: prev.cars.map(car => car.id === carId ? {
-        ...car,
-        records: car.records.map(r => r.date === oldDate ? { ...r, date: newDate } : r)
-      } : car)
+      cars: prev.cars.map(car => car.id === carId ? { ...car, records: car.records.map(r => r.date === oldDate ? { ...r, date: newDate } : r) } : car)
     }));
   };
 
@@ -111,15 +109,48 @@ export function useStorage() {
 
   const updateNoteOptions = (newOptions: string[]) => { setData(prev => ({ ...prev, noteOptions: newOptions })); };
 
+  // СКЛАД
+  const addWarehouseCategory = (name: string) => {
+    setData(prev => ({ ...prev, warehouseCategories: [...(prev.warehouseCategories || []), { id: crypto.randomUUID(), name }] }));
+  };
+
+  const updateWarehouseCategory = (id: string, name: string) => {
+    setData(prev => ({ ...prev, warehouseCategories: (prev.warehouseCategories || []).map(c => c.id === id ? { ...c, name } : c) }));
+  };
+
+  const deleteWarehouseCategory = (id: string) => {
+    setData(prev => ({ 
+      ...prev, 
+      warehouseCategories: (prev.warehouseCategories || []).filter(c => c.id !== id),
+      warehouseItems: (prev.warehouseItems || []).filter(i => i.categoryId !== id)
+    }));
+  };
+
+  const addWarehouseItem = (item: Omit<WarehouseItem, 'id'>) => {
+    setData(prev => ({ ...prev, warehouseItems: [...(prev.warehouseItems || []), { ...item, id: crypto.randomUUID() }] }));
+  };
+
+  const updateWarehouseItem = (id: string, updatedFields: Partial<WarehouseItem>) => {
+    setData(prev => ({ ...prev, warehouseItems: (prev.warehouseItems || []).map(i => i.id === id ? { ...i, ...updatedFields } : i) }));
+  };
+
+  const deleteWarehouseItem = (id: string) => {
+    setData(prev => ({ ...prev, warehouseItems: (prev.warehouseItems || []).filter(i => i.id !== id) }));
+  };
+
   return {
     isLoaded, 
     clients: data.clients, 
     cars: data.cars, 
     noteOptions: data.noteOptions,
-    lastUsedNote: data.lastUsedNote, // Экспортируем
+    lastUsedNote: data.lastUsedNote,
+    warehouseCategories: data.warehouseCategories,
+    warehouseItems: data.warehouseItems,
     addClient, updateClient, deleteClient,
     addCarToClient, updateCar, deleteCar,
     addRecord, updateRecord, deleteRecord,
-    updateNoteOptions, updateClientActivity, updateGroupDate
+    updateNoteOptions, updateClientActivity, updateGroupDate,
+    addWarehouseCategory, updateWarehouseCategory, deleteWarehouseCategory,
+    addWarehouseItem, updateWarehouseItem, deleteWarehouseItem
   };
 }

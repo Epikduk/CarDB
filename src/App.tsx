@@ -3,12 +3,13 @@ import { Home } from './pages/Home';
 import { ClientList } from './pages/ClientList';
 import { CarDetails } from './pages/CarDetails';
 import { Reporting } from './pages/Reporting';
+import { Warehouse } from './pages/Warehouse'; // Импортируем новый компонент
 import { Settings, Home as HomeIcon } from 'lucide-react';
 import { useStorage } from './hooks/useStorage';
 import { SettingsModal } from './components/SettingsModal';
 import logo from './logo.png';
 
-type View = { type: 'home' | 'list' | 'details' | 'reporting'; carId?: string };
+type View = { type: 'home' | 'list' | 'details' | 'reporting' | 'warehouse'; carId?: string };
 
 function App() {
   const storage = useStorage();
@@ -20,8 +21,6 @@ function App() {
   const [clientListScrollPos, setClientListScrollPos] = useState(0);
   const [clientSortBy, setClientSortBy] = useState<'name' | 'cars' | 'activity'>('name');
   const [clientStatusFilter, setClientStatusFilter] = useState<number | 'all'>('all');
-  
-  // НОВОЕ: Состояние для хранения ID открытых окон предоплаты
   const [openPrepaymentIds, setOpenPrepaymentIds] = useState<Set<string>>(new Set());
 
   if (!storage.isLoaded) return <div className="h-screen flex items-center justify-center font-bold text-slate-900 font-sans">Загрузка BroncomParts...</div>;
@@ -89,7 +88,7 @@ function App() {
             clients={storage.clients} 
             cars={storage.cars} 
             noteOptions={storage.noteOptions}
-            lastUsedNote={storage.lastUsedNote} // Передаем последнее примечание
+            lastUsedNote={storage.lastUsedNote}
             addRecord={storage.addRecord} 
             updateRecord={storage.updateRecord} 
             deleteRecord={storage.deleteRecord}
@@ -99,6 +98,21 @@ function App() {
             setOpenPrepaymentIds={setOpenPrepaymentIds}
           />
         )}
+
+        {currentView.type === 'warehouse' && (
+          <Warehouse 
+            categories={storage.warehouseCategories}
+            items={storage.warehouseItems}
+            addCategory={storage.addWarehouseCategory}
+            updateCategory={storage.updateWarehouseCategory}
+            deleteCategory={storage.deleteWarehouseCategory}
+            addItem={storage.addWarehouseItem}
+            updateItem={storage.updateWarehouseItem}
+            deleteItem={storage.deleteWarehouseItem}
+            onBack={() => setCurrentView({ type: 'home' })}
+          />
+        )}
+
         {currentView.type === 'reporting' && <Reporting cars={storage.cars} clients={storage.clients} onBack={() => setCurrentView({ type: 'home' })} />}
       </main>
 

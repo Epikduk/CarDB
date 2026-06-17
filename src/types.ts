@@ -33,9 +33,28 @@ export interface Client {
   lastActivity?: number;
 }
 
+// Новые интерфейсы для склада
+export interface WarehouseCategory {
+  id: string;
+  name: string;
+}
+
+export interface WarehouseItem {
+  id: string;
+  categoryId: string; // Связь с категорией
+  catalogNumber: string;
+  brand: string;
+  description: string;
+  quantity: number;
+  unitPricePurchase: number;
+  note: string;
+}
+
 export interface AppData {
   clients: Client[];
   cars: Car[];
   noteOptions: string[];
-  lastUsedNote?: string; // Новое поле
+  lastUsedNote?: string;
+  warehouseCategories: WarehouseCategory[]; // Категории склада
+  warehouseItems: WarehouseItem[];         // Товары на складе
 }

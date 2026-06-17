@@ -4,7 +4,7 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "!Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1781702620814
+      "lastActivity": 1781707998871
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
@@ -39,7 +39,7 @@
       "id": "0f5bd816-752e-408d-bc4c-a8826fdf932c",
       "fullName": "Месроп Мовсисян",
       "phone": "+79675399393",
-      "lastActivity": 1780659686157
+      "lastActivity": 1781707645044
     },
     {
       "id": "8bde670e-fdd4-4344-9d71-b6e5add26eb7",
@@ -63,7 +63,7 @@
       "id": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
       "fullName": "!ЕДИНИЧНЫЕ ЗАКАЗЫ",
       "phone": "",
-      "lastActivity": 1781702639874
+      "lastActivity": 1781708499454
     },
     {
       "id": "2ef5123d-bb9c-445f-a59a-488993e4faba",
@@ -242,6 +242,21 @@
           "note": "—",
           "id": "9d6648b9-f5cc-4e4f-a8cf-d6a66df76ac9",
           "status": 0
+        },
+        {
+          "date": "2026-06-17",
+          "catalogNumber": "432",
+          "brand": "4324",
+          "description": "фильтр",
+          "quantity": 1,
+          "unitPriceSale": 300,
+          "unitPricePurchase": 120,
+          "note": "Exist",
+          "status": 2,
+          "totalPrice": 300,
+          "purchasePrice": 120,
+          "prepayment": 0,
+          "id": "9d189fd9-989c-4c87-9059-8dfc72d49000"
         }
       ],
       "carNote": "",
@@ -538,6 +553,51 @@
           "purchasePrice": 4783,
           "prepayment": 0,
           "id": "0fed140b-5d55-4cae-b1e1-76b05e3d4754"
+        },
+        {
+          "date": "2026-06-17",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "куцкцу",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "d7c7cc47-297e-434e-931d-dc73bfc9cdd8"
+        },
+        {
+          "date": "2026-06-17",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "аыва",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "72e72fe7-86c7-4da5-82ee-cf285c54fbf2"
+        },
+        {
+          "date": "2026-06-17",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "авыавы",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "224ade22-dfc2-4d3e-95fe-6e111b781457"
         }
       ],
       "vin": "XW8LJ6NS6KH412987",
@@ -899,7 +959,7 @@
       "clientId": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "records": [
         {
-          "date": "2026-04-25",
+          "date": "2026-04-24",
           "catalogNumber": "PE0114302B",
           "brand": "MAZDA",
           "description": "Фильтр масляный двигателя",
@@ -914,7 +974,7 @@
           "id": "b19ee56d-5fda-4b20-8005-5ab555daed03"
         },
         {
-          "date": "2026-04-25",
+          "date": "2026-04-24",
           "catalogNumber": "A487",
           "brand": "VIC",
           "description": "Фильтр воздушный",
@@ -929,7 +989,7 @@
           "id": "305def38-e6fd-4cf4-8f70-55a33d411031"
         },
         {
-          "date": "2026-04-25",
+          "date": "2026-04-24",
           "catalogNumber": "BDGF61J6X",
           "brand": "MAZDA",
           "description": "Фильтр салона",
@@ -944,7 +1004,7 @@
           "id": "9e227c3b-d642-4e10-beb7-d4dd711b6108"
         },
         {
-          "date": "2026-04-25",
+          "date": "2026-04-24",
           "catalogNumber": "7530",
           "brand": "LIQUI MOLY",
           "description": "Масло моторное Special Tec AA 5W-30 SP GF-6A 5л",
@@ -3221,7 +3281,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "АвтоТО",
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3236,7 +3296,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "Emex",
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3251,7 +3311,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "АвтоТО",
-          "status": 0,
+          "status": 1,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3266,7 +3326,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "SDS",
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3281,7 +3341,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "аа",
-          "status": 0,
+          "status": 3,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3311,7 +3371,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "SDS",
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3326,7 +3386,7 @@
           "unitPriceSale": 0,
           "unitPricePurchase": 0,
           "note": "AutoPiter",
-          "status": 0,
+          "status": 2,
           "totalPrice": 0,
           "purchasePrice": 0,
           "prepayment": 0,
@@ -3356,22 +3416,8 @@
       "carNote": ""
     }
   ],
-  "noteOptions": [
-    "АвтоТО",
-    "Emex",
-    "Exist",
-    "AutoPiter",
-    "SDS",
-    "BerlinMotors",
-    "ПрофитЛига",
-    "Мосавтошина",
-    "Мир запчастей",
-    "Автолиния",
-    "Авито",
-    "уу",
-    "аа",
-    "42",
-    "ваыа"
-  ],
-  "lastUsedNote": "AutoPiter"
+  "noteOptions": [],
+  "lastUsedNote": "Emex",
+  "warehouseCategories": [],
+  "warehouseItems": []
 }
