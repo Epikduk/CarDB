@@ -32,22 +32,46 @@ export function CarDetails({
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const baseOptions = useMemo(() => {
-    const otherOptions = noteOptions.filter((opt: string) => opt !== lastUsedNote).sort((a: string, b: string) => a.localeCompare(b));
-    return lastUsedNote && noteOptions.includes(lastUsedNote) ? [lastUsedNote, ...otherOptions] : otherOptions;
+  // ЛОГИКА СОРТИРОВКИ: LastUsed (первый) -> Алфавит -> Склад (последний, если не первый)
+  const sortedNoteOptions = useMemo(() => {
+    const allBase = Array.from(new Set([...noteOptions, 'склад']));
+    
+    // Если ничего не выбрано ранее, просто всё по алфавиту, склад в конец
+    if (!lastUsedNote) {
+      const others = allBase.filter(o => o !== 'склад').sort((a, b) => a.localeCompare(b));
+      return [...others, 'склад'];
+    }
+
+    // Если последний выбор был 'склад' - он первый, остальные по алфавиту
+    if (lastUsedNote === 'склад') {
+      const others = allBase.filter(o => o !== 'склад').sort((a, b) => a.localeCompare(b));
+      return ['склад', ...others];
+    }
+
+    // Если последний выбор был другой - он первый, остальные по алфавиту, склад в самом конце
+    const others = allBase
+      .filter(o => o !== lastUsedNote && o !== 'склад')
+      .sort((a, b) => a.localeCompare(b));
+    
+    return [lastUsedNote, ...others, 'склад'];
   }, [noteOptions, lastUsedNote]);
 
-  const fullOptionsWithWarehouse = useMemo(() => {
-    const opts = Array.from(new Set([...noteOptions, 'склад']));
-    const otherOptions = opts.filter((opt: string) => opt !== lastUsedNote).sort((a: string, b: string) => a.localeCompare(b));
-    return lastUsedNote && opts.includes(lastUsedNote) ? [lastUsedNote, ...otherOptions] : otherOptions;
-  }, [noteOptions, lastUsedNote]);
+  // Варианты для редактирования обычной записи (без склада)
+  const baseOptionsForEdit = useMemo(() => {
+    return sortedNoteOptions.filter(opt => opt !== 'склад');
+  }, [sortedNoteOptions]);
 
   useEffect(() => {
     if (isAdding && !formData.date && !warehouseSelection) {
-      setFormData({ date: format(new Date(), 'yyyy-MM-dd'), catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: lastUsedNote || baseOptions[0] || '', status: 0 });
+      setFormData({ 
+        date: format(new Date(), 'yyyy-MM-dd'), 
+        catalogNumber: '', brand: '', description: '', 
+        quantity: '1', unitPriceSale: '', unitPricePurchase: '', 
+        note: lastUsedNote || sortedNoteOptions[0] || '', 
+        status: 0 
+      });
     }
-  }, [isAdding, baseOptions, lastUsedNote, warehouseSelection]);
+  }, [isAdding, sortedNoteOptions, lastUsedNote, warehouseSelection]);
 
   const filteredGroupedRecords = useMemo(() => {
     if (!car) return [];
@@ -101,12 +125,11 @@ export function CarDetails({
   };
 
   const handleConfirmDateChange = (oldDate: string) => { if (tempDateValue && tempDateValue !== oldDate) updateGroupDate(car.id, oldDate, tempDateValue); setEditingGroupDate(null); };
-  const handleAddAtDate = (date: string) => { setFormData({ date, catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: lastUsedNote || baseOptions[0] || '', status: 0 }); setIsAdding(true); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const handleAddAtDate = (date: string) => { setFormData({ date, catalogNumber: '', brand: '', description: '', quantity: '1', unitPriceSale: '', unitPricePurchase: '', note: lastUsedNote || sortedNoteOptions[0] || '', status: 0 }); setIsAdding(true); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const handleGroupPrepayment = (records: any[], amount: string) => { if (records.length > 0) updateRecord(car.id, records[0].id, { ...records[0], prepayment: Number(amount) || 0 }); };
   const handleDeleteClick = (recordId: string) => { if (pendingDeleteId === recordId) { deleteRecord(car.id, recordId); setPendingDeleteId(null); } else { setPendingDeleteId(recordId); setTimeout(() => setPendingDeleteId(null), 3000); } };
   const togglePrepayment = (recordId: string) => { const newSet = new Set(openPrepaymentIds); if (newSet.has(recordId)) newSet.delete(recordId); else newSet.add(recordId); setOpenPrepaymentIds(newSet); };
 
-  // ВОССТАНОВЛЕННАЯ ФУНКЦИЯ PDF
   const exportDayPDF = (group: any) => {
     try {
       const doc = new jsPDF();
@@ -118,31 +141,16 @@ export function CarDetails({
       doc.text(`ЗАКАЗ ОТ ${format(new Date(group.date), 'dd.MM.yyyy')}`, 14, 20);
       doc.setFontSize(11);
       doc.text(`Автомобиль: ${car.brand} ${car.model} (${car.licensePlate || car.vin || '—'})`, 14, 30);
-      
-      const tableData = group.records
-        .filter((r: any) => r.status !== 3)
-        .map((r: any) => [
-          r.brand || '—', 
-          r.description, 
-          r.quantity, 
-          `${(r.totalPrice || 0).toLocaleString()} ₽`
-        ]);
-
+      const tableData = group.records.filter((r: any) => r.status !== 3).map((r: any) => [r.brand || '—', r.description, r.quantity, `${(r.totalPrice || 0).toLocaleString()} ₽`]);
       autoTable(doc, {
-        startY: 38,
-        head: [['Бренд', 'Описание', 'Кол-во', 'Сумма']],
-        body: tableData,
-        theme: 'grid',
+        startY: 38, head: [['Бренд', 'Описание', 'Кол-во', 'Сумма']], body: tableData, theme: 'grid',
         styles: { font: 'Roboto', fontStyle: 'normal', fontSize: 10 },
         headStyles: { fillColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' },
         foot: [['ИТОГО', '', '', `${(group.sale || 0).toLocaleString()} ₽`]],
         footStyles: { fillColor: [241, 245, 249], textColor: [0, 0, 0], font: 'Roboto', fontStyle: 'normal' }
       });
-      
       doc.save(`Order_${group.date}_${client.fullName.replace(/\s+/g, '_')}.pdf`);
-    } catch (err) {
-      console.error("PDF Export Error:", err);
-    }
+    } catch (err) { console.error("PDF Export Error:", err); }
   };
 
   if (!car || !client) return null;
@@ -180,7 +188,7 @@ export function CarDetails({
 
       <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl mb-12 relative overflow-hidden">
         <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center relative z-50">
-          <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">История обслуживания</h2>
+          <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">History</h2>
           <div className="flex gap-2 items-center">
             <div className="relative w-64 h-9">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
@@ -236,9 +244,9 @@ export function CarDetails({
                   <td className="p-1.5 bg-white"><input type="number" disabled={isWarehouseRecord} style={timesNewRoman} className={`w-full p-2 border border-slate-200 rounded-lg text-[14px] text-right font-bold text-red-600 bg-red-50/50 outline-none ${noArrowsClass} ${isWarehouseRecord ? 'opacity-50' : ''}`} value={formData.unitPricePurchase} onChange={e => setFormData({...formData, unitPricePurchase: e.target.value})}/></td>
                   <td className="p-1.5 bg-white overflow-visible px-4 font-serif">
                     <CustomSelect 
-                      options={editingId && !isWarehouseRecord ? baseOptions : fullOptionsWithWarehouse} 
+                      options={editingId && !isWarehouseRecord ? baseOptionsForEdit : sortedNoteOptions} 
                       value={formData.note} 
-                      disabled={isWarehouseRecord} 
+                      disabled={isWarehouseRecord}
                       onChange={(val: string) => { 
                         if (val === 'склад') onStartWarehouseSelection({ carId, recordId: editingId, isAdding, formData }); 
                         else setFormData({...formData, note: val, warehouseItemId: undefined}); 

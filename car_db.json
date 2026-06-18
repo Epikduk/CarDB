@@ -63,7 +63,7 @@
       "id": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
       "fullName": "!ЕДИНИЧНЫЕ ЗАКАЗЫ",
       "phone": "",
-      "lastActivity": 1781776095359
+      "lastActivity": 1781778609643
     },
     {
       "id": "2ef5123d-bb9c-445f-a59a-488993e4faba",
@@ -3281,6 +3281,61 @@
           "purchasePrice": 340,
           "prepayment": 0,
           "id": "4103543f-c45c-4b70-8dee-4bbbc4423970"
+        },
+        {
+          "date": "2026-06-18",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "б",
+          "status": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "b16f6373-8462-4af8-9042-626ba7df8bf9"
+        },
+        {
+          "date": "2026-06-18",
+          "note": "е",
+          "catalogNumber": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "67c00096-476d-46f5-bf0f-f450ed1a6b65"
+        },
+        {
+          "date": "2026-06-18",
+          "note": "я",
+          "catalogNumber": "",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "249c1c0a-4ece-466e-8c32-b681c7fa464c"
+        },
+        {
+          "date": "2026-06-18",
+          "catalogNumber": "",
+          "brand": "",
+          "description": "уц",
+          "quantity": 1,
+          "unitPriceSale": 0,
+          "unitPricePurchase": 0,
+          "note": "склад",
+          "status": 0,
+          "warehouseItemId": "e801ee88-8db7-4da5-8fb4-0bebb2afe709",
+          "totalPrice": 0,
+          "purchasePrice": 0,
+          "prepayment": 0,
+          "id": "d6355791-d4f8-45b1-9bca-a18e87a19498"
         }
       ],
       "vin": "ку",
@@ -3297,7 +3352,10 @@
     "в",
     "г",
     "д",
-    "е"
+    "е",
+    ".",
+    "ю",
+    "я"
   ],
   "lastUsedNote": "склад",
   "warehouseCategories": [
@@ -3326,7 +3384,19 @@
       "name": "432"
     }
   ],
-  "warehouseItems": [],
+  "warehouseItems": [
+    {
+      "catalogNumber": "",
+      "brand": "",
+      "description": "уц",
+      "quantity": 1,
+      "unitPricePurchase": 0,
+      "note": "уц",
+      "categoryId": "aa90c07d-186f-4c55-9b8f-367888b6ab6a",
+      "id": "e801ee88-8db7-4da5-8fb4-0bebb2afe709",
+      "reserved": 1
+    }
+  ],
   "cashRecords": [
     {
       "date": "2026-06-18",
