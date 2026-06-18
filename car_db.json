@@ -4,19 +4,19 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "!Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1781707998871
+      "lastActivity": 1781777540682
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
       "fullName": "Виталик Джанго",
       "phone": "+79289115507",
-      "lastActivity": 1781549182306
+      "lastActivity": 1781765338376
     },
     {
       "id": "fa4bd634-f121-4199-9900-659b520af900",
       "fullName": "Артем Бабад",
       "phone": "",
-      "lastActivity": 1781700472928
+      "lastActivity": 1781770461076
     },
     {
       "id": "9feb88f8-e964-4ee9-a791-81e75a0be6f3",
@@ -28,7 +28,7 @@
       "id": "1e14b14c-b81a-47a7-9549-6d3eb8043572",
       "fullName": "Анзор Берая",
       "phone": "+79283449424",
-      "lastActivity": 1781006493819
+      "lastActivity": 1781770405321
     },
     {
       "id": "5ccebf55-a26f-47aa-866c-2bc1cd69d301",
@@ -51,25 +51,25 @@
       "id": "eab69a9a-26f5-40e4-8337-0e533e989777",
       "fullName": "Богдан Шибаков",
       "phone": "",
-      "lastActivity": 1780647100851
+      "lastActivity": 1781775733434
     },
     {
       "id": "bf34649c-23e1-48b5-8491-60f94ec79adb",
       "fullName": "Владимир Кривошеев",
       "phone": "",
-      "lastActivity": 1780000267245
+      "lastActivity": 1781770455335
     },
     {
       "id": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
       "fullName": "!ЕДИНИЧНЫЕ ЗАКАЗЫ",
       "phone": "",
-      "lastActivity": 1781708499454
+      "lastActivity": 1781776095359
     },
     {
       "id": "2ef5123d-bb9c-445f-a59a-488993e4faba",
       "fullName": "Василиса",
       "phone": "+79283558146",
-      "lastActivity": 1778948526109
+      "lastActivity": 1781770296572
     },
     {
       "id": "8facc369-7df8-4140-851c-5208dd4a7714",
@@ -81,7 +81,7 @@
       "id": "47df265c-7f04-47b3-b544-1976f74f3ced",
       "fullName": "Никита Окрушко",
       "phone": "",
-      "lastActivity": 1781536223643
+      "lastActivity": 1781770304984
     },
     {
       "id": "25c9fb31-4215-4a67-ab7a-6358f941371f",
@@ -93,13 +93,13 @@
       "id": "bbb876ea-d9af-4936-b416-557604787913",
       "fullName": "Олег кашкай",
       "phone": "+79283766437",
-      "lastActivity": 1781696441483
+      "lastActivity": 1781775863769
     },
     {
       "id": "4d32facb-b504-4c96-baef-b6fe9e28b955",
       "fullName": "Стас Гробовщик",
       "phone": "+79887577775",
-      "lastActivity": 1781070857109
+      "lastActivity": 1781770414981
     },
     {
       "id": "f61ad6c8-9b26-4c2a-aa6d-d68baf331480",
@@ -1697,23 +1697,7 @@
     {
       "id": "ee228965-4182-4560-8705-fff347d7b0ad",
       "clientId": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
-      "records": [
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "Авито",
-          "status": 0,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "934a086d-b860-4566-9f29-1678deeb9ce8"
-        }
-      ],
+      "records": [],
       "vin": "",
       "brand": "Прочее",
       "model": ".",
@@ -2713,6 +2697,17 @@
           "purchasePrice": 1397,
           "prepayment": 0,
           "id": "eeed274a-3878-4ca6-8211-56547ec2c5a4"
+        },
+        {
+          "date": "2026-05-29",
+          "unitPriceSale": 200,
+          "unitPricePurchase": 100,
+          "quantity": 2,
+          "catalogNumber": "",
+          "totalPrice": 400,
+          "purchasePrice": 200,
+          "prepayment": 0,
+          "id": "006dfff7-473a-4d4e-b2ac-3aa2ff1b2c4c"
         }
       ],
       "vin": "wdc2533091f590171",
@@ -3273,139 +3268,19 @@
       "clientId": "a44d97f7-5133-4ceb-84e3-48ada1da6167",
       "records": [
         {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
+          "date": "2026-06-18",
+          "catalogNumber": "5PK1750",
+          "brand": "BOSCH",
+          "description": "Ремень поликлиновой",
           "quantity": 1,
           "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "АвтоТО",
+          "unitPricePurchase": 340,
+          "note": "склад",
           "status": 2,
           "totalPrice": 0,
-          "purchasePrice": 0,
+          "purchasePrice": 340,
           "prepayment": 0,
-          "id": "a14c1604-7d2e-4a27-996e-2911ab3abad3"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "Emex",
-          "status": 2,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "11d78ad2-835a-44e1-b6d8-abe9a854f23b"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "АвтоТО",
-          "status": 1,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "9071136e-ae28-4f47-b0a2-1f81b122194d"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "SDS",
-          "status": 2,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "0655903f-1796-4fa3-9e79-e35839e11323"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "аа",
-          "status": 3,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "0e7d3f8e-d869-4026-937d-89c50caea6dd"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "Emex",
-          "status": 0,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "7f0fab19-24af-46a5-9d73-099fd7734d6a"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "SDS",
-          "status": 2,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "7ba6fa95-8f1e-4ed5-bc44-d1618c323b25"
-        },
-        {
-          "date": "2026-06-17",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "AutoPiter",
-          "status": 2,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "86c00fd6-6a46-40f5-bcef-47c74339ce79"
-        },
-        {
-          "date": "2026-06-16",
-          "catalogNumber": "",
-          "brand": "",
-          "description": "",
-          "quantity": 1,
-          "unitPriceSale": 0,
-          "unitPricePurchase": 0,
-          "note": "AutoPiter",
-          "status": 0,
-          "totalPrice": 0,
-          "purchasePrice": 0,
-          "prepayment": 0,
-          "id": "74f63932-bd7a-4d93-af07-f70f739596ac"
+          "id": "4103543f-c45c-4b70-8dee-4bbbc4423970"
         }
       ],
       "vin": "ку",
@@ -3416,8 +3291,74 @@
       "carNote": ""
     }
   ],
-  "noteOptions": [],
-  "lastUsedNote": "Emex",
-  "warehouseCategories": [],
-  "warehouseItems": []
+  "noteOptions": [
+    "а",
+    "б",
+    "в",
+    "г",
+    "д",
+    "е"
+  ],
+  "lastUsedNote": "склад",
+  "warehouseCategories": [
+    {
+      "id": "aa90c07d-186f-4c55-9b8f-367888b6ab6a",
+      "name": "1"
+    },
+    {
+      "id": "c2e117ba-5e43-4c06-a456-29641b5e258c",
+      "name": "2"
+    },
+    {
+      "id": "7d194600-5b8d-43f3-88a1-09af16d26118",
+      "name": "3"
+    },
+    {
+      "id": "6a5285bf-5be6-4dc3-9e67-2930d19402e2",
+      "name": "4"
+    },
+    {
+      "id": "3c167ac1-97dc-4976-9072-a66cabe6afe2",
+      "name": "5"
+    },
+    {
+      "id": "bdf76cf9-1e22-4bc9-86b0-12f9c4028927",
+      "name": "432"
+    }
+  ],
+  "warehouseItems": [],
+  "cashRecords": [
+    {
+      "date": "2026-06-18",
+      "flow": 321,
+      "description": "32323",
+      "id": "6b7ec4c1-a2c3-43e8-8c3b-b2b63bf5c127",
+      "createdAt": 1781777454606,
+      "total": 321
+    },
+    {
+      "date": "2026-06-18",
+      "flow": -100,
+      "description": "уцкуцуцккуццу",
+      "id": "72b066be-eca1-4962-8d9a-a1b083c353a0",
+      "createdAt": 1781777465653,
+      "total": 221
+    },
+    {
+      "date": "2026-06-18",
+      "flow": 43244,
+      "description": "42343242",
+      "id": "add85dba-9439-415f-a0c3-54af1d9db1cb",
+      "createdAt": 1781777472082,
+      "total": 43465
+    },
+    {
+      "date": "2026-06-18",
+      "flow": -20000,
+      "description": "авы",
+      "id": "2b9b1f4c-c9ba-4dbc-8821-f05ed5851f8b",
+      "createdAt": 1781777504838,
+      "total": 23465
+    }
+  ]
 }

@@ -8,6 +8,12 @@ export function SettingsModal({ isOpen, onClose, options, onUpdate }: any) {
   const labelStyle = "block text-[11px] font-black text-slate-400 uppercase mb-1.5 tracking-[0.1em] ml-1";
   const inputStyle = "flex-1 px-4 py-2.5 border border-slate-200 rounded-xl focus:border-green-500 outline-none font-bold text-[14px] shadow-sm";
 
+  // Обработчик удаления: фильтруем массив по значению текста, а не по индексу
+  const handleDelete = (optionToDelete: string) => {
+    const updatedOptions = options.filter((opt: string) => opt !== optionToDelete);
+    onUpdate(updatedOptions);
+  };
+
   return (
     <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[150] p-4 animate-in fade-in duration-200 text-left">
       <div className="bg-white rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.2)] w-full max-w-sm overflow-hidden animate-in zoom-in duration-200 border border-white/20">
@@ -32,10 +38,24 @@ export function SettingsModal({ isOpen, onClose, options, onUpdate }: any) {
                 placeholder="Текст..." 
                 value={newOption} 
                 onChange={(e) => setNewOption(e.target.value)} 
-                onKeyDown={(e) => {if(e.key==='Enter' && newOption.trim()){ onUpdate([...options, newOption.trim()]); setNewOption(''); }}} 
+                onKeyDown={(e) => {
+                  if(e.key === 'Enter' && newOption.trim()){ 
+                    if (!options.includes(newOption.trim())) {
+                      onUpdate([...options, newOption.trim()]); 
+                    }
+                    setNewOption(''); 
+                  }
+                }} 
               />
               <button 
-                onClick={() => {if(newOption.trim()){ onUpdate([...options, newOption.trim()]); setNewOption(''); }}} 
+                onClick={() => {
+                  if(newOption.trim()){ 
+                    if (!options.includes(newOption.trim())) {
+                      onUpdate([...options, newOption.trim()]); 
+                    }
+                    setNewOption(''); 
+                  }
+                }} 
                 className="bg-slate-950 text-white p-2.5 rounded-xl hover:bg-green-600 transition-all shadow-lg active:scale-95"
               >
                 <Plus size={20} />
@@ -44,14 +64,19 @@ export function SettingsModal({ isOpen, onClose, options, onUpdate }: any) {
             
             <label className={labelStyle}>Список вариантов</label>
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
-              {[...options].sort((a, b) => a.localeCompare(b)).map((opt: string, i: number) => (
-                <div key={i} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100/50 group hover:border-slate-200 transition-all">
-                  <span className="text-slate-700 font-bold text-[13px] italic">{opt}</span>
-                  <button onClick={() => onUpdate(options.filter((_:any, index:number) => index !== i))} className="text-slate-300 hover:text-red-500 transition-colors">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
+              {[...options]
+                .sort((a, b) => a.localeCompare(b))
+                .map((opt: string, i: number) => (
+                  <div key={i} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100/50 group hover:border-slate-200 transition-all">
+                    <span className="text-slate-700 font-bold text-[13px] italic">{opt}</span>
+                    <button 
+                      onClick={() => handleDelete(opt)} 
+                      className="text-slate-300 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
               {options.length === 0 && (
                 <p className="text-center py-4 text-slate-300 text-[10px] font-bold uppercase italic font-sans leading-none">Список пуст</p>
               )}

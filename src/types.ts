@@ -12,6 +12,7 @@ export interface MaintenanceRecord {
   note: string;
   status?: number;
   prepayment?: number;
+  warehouseItemId?: string;
 }
 
 export interface Car {
@@ -33,7 +34,6 @@ export interface Client {
   lastActivity?: number;
 }
 
-// Новые интерфейсы для склада
 export interface WarehouseCategory {
   id: string;
   name: string;
@@ -41,13 +41,24 @@ export interface WarehouseCategory {
 
 export interface WarehouseItem {
   id: string;
-  categoryId: string; // Связь с категорией
+  categoryId: string;
   catalogNumber: string;
   brand: string;
   description: string;
   quantity: number;
+  reserved: number;
   unitPricePurchase: number;
   note: string;
+}
+
+// НОВЫЙ ТИП ДЛЯ КАССЫ
+export interface CashRecord {
+  id: string;
+  date: string;
+  flow: number;        // Денежный поток (+ или -)
+  description: string;
+  total: number;       // Итоговая сумма (баланс после этой операции)
+  createdAt: number;   // Время создания для точной сортировки внутри одного дня
 }
 
 export interface AppData {
@@ -55,6 +66,7 @@ export interface AppData {
   cars: Car[];
   noteOptions: string[];
   lastUsedNote?: string;
-  warehouseCategories: WarehouseCategory[]; // Категории склада
-  warehouseItems: WarehouseItem[];         // Товары на складе
+  warehouseCategories: WarehouseCategory[];
+  warehouseItems: WarehouseItem[];
+  cashRecords: CashRecord[]; // Массив записей кассы
 }

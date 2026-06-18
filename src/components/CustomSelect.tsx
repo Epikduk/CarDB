@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 
-export function CustomSelect({ options, value, onChange, placeholder, className }: any) {
+export function CustomSelect({ options, value, onChange, placeholder, className, disabled }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null); // Реф для самого списка
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
 
   const updateCoords = () => {
@@ -22,8 +22,6 @@ export function CustomSelect({ options, value, onChange, placeholder, className 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      
-      // Проверяем, был ли клик внутри кнопки или внутри выпадающего списка
       const clickedInsideButton = containerRef.current?.contains(target);
       const clickedInsideDropdown = dropdownRef.current?.contains(target);
 
@@ -50,16 +48,18 @@ export function CustomSelect({ options, value, onChange, placeholder, className 
     <div className={`relative ${className}`} ref={containerRef}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-[11px] font-bold text-slate-800 shadow-sm hover:border-green-500 transition-all outline-none"
+        disabled={disabled}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={`w-full px-3 py-2 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-[11px] font-bold text-slate-800 shadow-sm transition-all outline-none
+          ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-50' : 'hover:border-green-500'}`}
       >
         <span className="truncate">{value || placeholder}</span>
-        <ChevronDown size={14} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        {!disabled && <ChevronDown size={14} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
       </button>
 
-      {isOpen && createPortal(
+      {isOpen && !disabled && createPortal(
         <div
-          ref={dropdownRef} // Привязываем реф здесь
+          ref={dropdownRef}
           className="fixed z-[9999] bg-white border border-slate-100 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] overflow-hidden animate-in fade-in zoom-in duration-150"
           style={{
             top: coords.top + 4,
