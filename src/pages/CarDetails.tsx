@@ -188,7 +188,7 @@ export function CarDetails({
 
       <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl mb-12 relative overflow-hidden">
         <div className="p-3 border-b bg-slate-50/30 flex justify-between items-center relative z-50">
-          <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">History</h2>
+          <h2 className="text-[11px] font-black text-slate-500 uppercase italic ml-2 tracking-widest text-left leading-none font-sans">История обслуживания</h2>
           <div className="flex gap-2 items-center">
             <div className="relative w-64 h-9">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />

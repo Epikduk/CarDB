@@ -4,7 +4,7 @@
       "id": "f04ea50a-f7a9-429b-accb-d6d36757e086",
       "fullName": "!Клиенты Виталика",
       "phone": "+79289115507",
-      "lastActivity": 1781777540682
+      "lastActivity": 1781849639143
     },
     {
       "id": "d25adc5c-8780-49e2-ac80-325e9d5ec043",
@@ -3430,5 +3430,6 @@
       "createdAt": 1781777504838,
       "total": 23465
     }
-  ]
+  ],
+  "lastSelectedCarId": "aee5485e-4879-4820-9e83-2bf89ad3a427"
 }

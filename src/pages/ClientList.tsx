@@ -8,61 +8,52 @@ export function ClientList({
   clients, cars, addClient, updateClient, deleteClient, 
   addCarToClient, updateCar, deleteCar, onSelectCar,
   expandedClientIds, setExpandedClientIds, scrollPos, setScrollPos,
-  sortBy, setSortBy, statusFilter, setStatusFilter
+  sortBy, setSortBy, statusFilter, setStatusFilter, lastSelectedCarId
 }: any) {
   const [searchTerm, setSearchTerm] = useState('');
   const [modal, setModal] = useState<{ type: any, data?: any }>({ type: null });
   const [confirm, setConfirm] = useState({ isOpen: false, id: '', name: '', type: 'client' as 'client' | 'car' });
 
-  // --- ЛОГИКА ВОССТАНОВЛЕНИЯ СКРОЛЛА ---
   useLayoutEffect(() => {
     const timer = setTimeout(() => { window.scrollTo(0, scrollPos); }, 0);
     return () => clearTimeout(timer);
   }, []);
 
-  // --- ЛОГИКА СОХРАНЕНИЯ СКРОЛЛА ---
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollPos(window.scrollY);
-    };
+    const handleScroll = () => { setScrollPos(window.scrollY); };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [setScrollPos]);
 
-  // --- ЛОГИКА ПОИСКА И СОРТИРОВКИ (ОБНОВЛЕННАЯ) ---
   const groupedData = useMemo(() => {
     const term = searchTerm.toLowerCase();
     
     const filtered = clients.map((client: any) => {
       const clientCars = cars.filter((car: any) => car.clientId === client.id);
-      
-      // Проверяем совпадение по клиенту
       const isClientMatch = (client.fullName + client.phone).toLowerCase().includes(term);
 
       const filteredCars = clientCars.filter((car: any) => {
-        // Проверяем совпадение по данным машины
         const carInfo = (car.brand + car.model + car.vin + (car.licensePlate || '')).toLowerCase();
         const isHistoryMatch = car.records?.some((record: any) => 
           (record.description + (record.catalogNumber || '') + (record.brand || '')).toLowerCase().includes(term)
         );
         const isCarMatch = carInfo.includes(term) || isHistoryMatch;
-
-        // ЛОГИКА: если совпал клиент, показываем все его машины. 
-        // Если не совпал клиент, показываем только те машины, что совпали по поиску.
         const matchesSearch = isClientMatch || isCarMatch;
-        
-        // Фильтр по статусу всегда должен соблюдаться
         const matchesStatus = statusFilter === 'all' || car.records?.some((r: any) => r.status === statusFilter);
-
         return matchesSearch && matchesStatus;
       });
 
-      // Решаем, отображать ли карточку клиента
-      const hasMatch = statusFilter === 'all' 
-        ? (isClientMatch || filteredCars.length > 0)
-        : (filteredCars.length > 0);
+      // СОРТИРОВКА МАШИН: Последняя выбранная -> По алфавиту
+      const sortedCars = [...filteredCars].sort((a, b) => {
+        if (a.id === lastSelectedCarId) return -1;
+        if (b.id === lastSelectedCarId) return 1;
+        const nameA = (a.brand + a.model).toLowerCase();
+        const nameB = (b.brand + b.model).toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
 
-      return { client, clientCars, filteredCars, hasMatch };
+      const hasMatch = statusFilter === 'all' ? (isClientMatch || filteredCars.length > 0) : (filteredCars.length > 0);
+      return { client, clientCars, filteredCars: sortedCars, hasMatch };
     }).filter((g: any) => g.hasMatch);
 
     return filtered.sort((a: any, b: any) => {
@@ -71,32 +62,19 @@ export function ClientList({
       if (sortBy === 'activity') return (b.client.lastActivity || 0) - (a.client.lastActivity || 0);
       return 0;
     });
-  }, [clients, cars, searchTerm, sortBy, statusFilter]);
+  }, [clients, cars, searchTerm, sortBy, statusFilter, lastSelectedCarId]);
 
-  // --- ФУНКЦИЯ РАСКРЫТИЯ С АВТОСКРОЛЛОМ ---
   const toggleExpand = (clientId: string) => {
     const isExpanding = !expandedClientIds.has(clientId);
     const newSet = new Set(expandedClientIds);
-    
-    if (newSet.has(clientId)) {
-      newSet.delete(clientId);
-    } else {
-      newSet.add(clientId);
-    }
+    if (newSet.has(clientId)) newSet.delete(clientId); else newSet.add(clientId);
     setExpandedClientIds(newSet);
-
     if (isExpanding) {
       setTimeout(() => {
         const element = document.getElementById(`client-card-${clientId}`);
         if (element) {
-          const navHeight = 80;
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - navHeight;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
+          const offsetPosition = element.getBoundingClientRect().top + window.pageYOffset - 80;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
       }, 150);
     }
@@ -117,7 +95,6 @@ export function ClientList({
     <div className="p-6 max-w-7xl mx-auto animate-in fade-in duration-500 text-left font-sans text-slate-900">
       <div className="flex justify-between items-start mb-6">
         <h1 className="text-3xl font-black text-black uppercase italic tracking-tight leading-none mt-4">База клиентов</h1>
-        
         <div className="flex items-center gap-4">
           <div className="flex flex-col bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-sm min-w-[400px]">
             <div className="flex gap-1">
@@ -134,13 +111,7 @@ export function ClientList({
               <button onClick={() => setStatusFilter(3)} className={controlBtnStyle(statusFilter === 3, 'text-red-600')}>Отменено</button>
             </div>
           </div>
-
-          <button 
-            onClick={() => setModal({ type: 'addClient' })} 
-            className="btn-action !py-3 !px-6 self-center ml-2"
-          >
-            <UserPlus size={18} /> <span>Новый клиент</span>
-          </button>
+          <button onClick={() => setModal({ type: 'addClient' })} className="btn-action !py-3 !px-6 self-center ml-2"><UserPlus size={18} /> <span>Новый клиент</span></button>
         </div>
       </div>
 
@@ -152,16 +123,8 @@ export function ClientList({
       <div className="grid grid-cols-1 gap-4">
         {groupedData.map(({ client, clientCars, filteredCars }: any) => {
           const isExpanded = expandedClientIds.has(client.id);
-          // Теперь filteredCars уже содержит все машины клиента, если совпало имя,
-          // либо только отфильтрованные машины, если совпали они.
-          const displayCars = filteredCars;
-          
           return (
-            <div 
-              key={client.id} 
-              id={`client-card-${client.id}`}
-              className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden hover:border-green-500/20 transition-all"
-            >
+            <div key={client.id} id={`client-card-${client.id}`} className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden hover:border-green-500/20 transition-all">
               <div onClick={() => toggleExpand(client.id)} className={`p-4 bg-slate-50/50 flex justify-between items-center cursor-pointer group/card relative z-10 transition-all border-b ${isExpanded ? 'border-slate-200' : 'border-transparent'}`}>
                 <div className="flex items-center gap-4 text-left">
                   <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}><ChevronDown size={20} className="text-slate-300 group-hover/card:text-green-600" /></div>
@@ -179,15 +142,13 @@ export function ClientList({
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
                   <button onClick={() => setConfirm({ isOpen: true, id: client.id, name: client.fullName, type: 'client' })} className="p-2 text-slate-300 hover:text-red-600 transition-all"><Trash2 size={20}/></button>
-                  <button onClick={() => setModal({ type: 'addCar', data: client.id })} className="btn-action">
-                    <Plus size={14}/> Добавить авто
-                  </button>
+                  <button onClick={() => setModal({ type: 'addCar', data: client.id })} className="btn-action"><Plus size={14}/> Добавить авто</button>
                 </div>
               </div>
 
               {isExpanded && (
                 <div className="p-1 bg-white animate-in slide-in-from-top-1 duration-200">
-                  {displayCars.map((car: any) => (
+                  {filteredCars.map((car: any) => (
                     <div key={car.id} onClick={() => handleCarClick(car.id)} className="group flex items-center justify-between p-2.5 rounded-xl hover:bg-green-50 transition-all cursor-pointer border border-transparent hover:border-green-100 mb-0.5">
                       <div className="flex items-center gap-4 flex-1 text-left min-w-0 overflow-hidden">
                         <div className="p-2.5 bg-slate-100 text-slate-400 rounded-xl group-hover:bg-white group-hover:text-green-600 group-hover:shadow-sm transition-all flex-shrink-0"><CarIcon size={22}/></div>
@@ -214,7 +175,7 @@ export function ClientList({
                       </div>
                     </div>
                   ))}
-                  {displayCars.length === 0 && (
+                  {filteredCars.length === 0 && (
                     <div className="p-8 text-center text-slate-300 font-bold uppercase text-[10px] tracking-widest italic leading-none">Нет совпадений по статусу</div>
                   )}
                 </div>

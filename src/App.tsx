@@ -4,7 +4,7 @@ import { ClientList } from './pages/ClientList';
 import { CarDetails } from './pages/CarDetails';
 import { Reporting } from './pages/Reporting';
 import { Warehouse } from './pages/Warehouse';
-import { Cashier } from './pages/Cashier'; // Импортируем
+import { Cashier } from './pages/Cashier';
 import { Settings, Home as HomeIcon } from 'lucide-react';
 import { useStorage } from './hooks/useStorage';
 import { SettingsModal } from './components/SettingsModal';
@@ -63,9 +63,13 @@ function App() {
             clients={storage.clients} cars={storage.cars}
             addClient={storage.addClient} updateClient={storage.updateClient} deleteClient={storage.deleteClient}
             addCarToClient={storage.addCarToClient} updateCar={storage.updateCar} deleteCar={storage.deleteCar}
+            lastSelectedCarId={storage.lastSelectedCarId}
             onSelectCar={(carId: string) => {
               const car = storage.cars.find(c => c.id === carId);
-              if (car) storage.updateClientActivity(car.clientId);
+              if (car) {
+                storage.updateClientActivity(car.clientId);
+                storage.updateLastCar(carId); // Запоминаем выбор
+              }
               setClientListScrollPos(window.scrollY);
               setCurrentView({ type: 'details', carId });
             }} 
@@ -87,10 +91,7 @@ function App() {
             onBack={() => setCurrentView({ type: 'list' })} 
             openPrepaymentIds={openPrepaymentIds} setOpenPrepaymentIds={setOpenPrepaymentIds}
             warehouseSelection={whSelection}
-            onStartWarehouseSelection={(selection: WarehouseSelection) => {
-              setWhSelection(selection);
-              setCurrentView({ type: 'warehouse' });
-            }}
+            onStartWarehouseSelection={(selection: any) => { setWhSelection(selection); setCurrentView({ type: 'warehouse' }); }}
           />
         )}
 
@@ -114,15 +115,7 @@ function App() {
           />
         )}
 
-        {currentView.type === 'cashier' && (
-          <Cashier 
-            records={storage.cashRecords}
-            addRecord={storage.addCashRecord}
-            updateRecord={storage.updateCashRecord}
-            deleteRecord={storage.deleteCashRecord}
-          />
-        )}
-
+        {currentView.type === 'cashier' && <Cashier records={storage.cashRecords} addRecord={storage.addCashRecord} updateRecord={storage.updateCashRecord} deleteRecord={storage.deleteCashRecord} />}
         {currentView.type === 'reporting' && <Reporting cars={storage.cars} clients={storage.clients} onBack={() => setCurrentView({ type: 'home' })} />}
       </main>
 

@@ -51,14 +51,13 @@ export interface WarehouseItem {
   note: string;
 }
 
-// НОВЫЙ ТИП ДЛЯ КАССЫ
 export interface CashRecord {
   id: string;
   date: string;
-  flow: number;        // Денежный поток (+ или -)
+  flow: number;
   description: string;
-  total: number;       // Итоговая сумма (баланс после этой операции)
-  createdAt: number;   // Время создания для точной сортировки внутри одного дня
+  total: number;
+  createdAt: number;
 }
 
 export interface AppData {
@@ -66,7 +65,8 @@ export interface AppData {
   cars: Car[];
   noteOptions: string[];
   lastUsedNote?: string;
+  lastSelectedCarId?: string; // ID последней выбранной машины
   warehouseCategories: WarehouseCategory[];
   warehouseItems: WarehouseItem[];
-  cashRecords: CashRecord[]; // Массив записей кассы
+  cashRecords: CashRecord[];
 }
